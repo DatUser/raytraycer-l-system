@@ -1,17 +1,21 @@
 #pragma once
 
 #include <iostream>
-#include "point3.hh"
 #include <math.h>
+#include "point3.hh"
+
+class Point3;
 
 class Vector3
 {
   public:
-    Vector3(Point3& a, Point3& b);
+    Vector3(const Point3& a, const Point3& b);
 
     Vector3(float x, float y, float z);
 
     Vector3 operator*(const float& l) const;
+
+    Vector3 operator-(const float& l) const;
 
     Vector3 operator-(const Vector3& v) const;
 
@@ -23,10 +27,16 @@ class Vector3
     //Produit scalaire
     float operator^(const Vector3& v) const;
 
-  private:
+    Vector3 get_normalized() const;
+
+    static Vector3 zero();
+
     float x;
     float y;
     float z;
+
+  private:
+    static Vector3* m_zero;
 };
 
 std::ostream& operator<<(std::ostream& out, Vector3 &vect);

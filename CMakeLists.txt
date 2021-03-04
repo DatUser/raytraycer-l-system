@@ -12,6 +12,10 @@ include_directories(
 # Searches for all .cc files
 set(SRC "src/utils/point3.cc"
     "src/utils/vector3.cc"
+    "src/utils/image.cc"
+    "src/utils/sphere.cc"
+    "src/utils/scene.cc"
+    "src/utils/uniform-texture.cc"
     "src/tp1.cc")
 
 
@@ -19,7 +23,7 @@ set(SRC "src/utils/point3.cc"
 cmake_minimum_required(VERSION 3.12)
 project(Raytracer)
 
-
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OPT_FLAGS} -Wall -Werror -Wextra -pedantic")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g3 -fsanitize=address")
 

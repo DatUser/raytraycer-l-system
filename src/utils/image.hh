@@ -15,7 +15,8 @@ class Image
 
   void save();
 
-  void put_pixel(unsigned int x, unsigned int y);
+  void put_pixel(unsigned int x, unsigned int y, uint8_t r, uint8_t g,
+      uint8_t b);
 
   private:
     unsigned int width;
