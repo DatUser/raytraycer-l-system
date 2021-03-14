@@ -2,7 +2,7 @@
 
 #include "texture-material.hh"
 
-class Uniform_Texture : Texture_Material
+class Uniform_Texture : public Texture_Material
 {
   public:
 

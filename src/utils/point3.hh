@@ -26,3 +26,7 @@ class Point3
 };
 
 std::ostream& operator<<(std::ostream& out, Point3 &p);
+
+float norm(const Point3& a, const Point3& b);
+
+float norm(const Point3& a, const Vector3& b);

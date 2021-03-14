@@ -31,3 +31,19 @@ std::ostream& operator<<(std::ostream& out, Point3 &p)
 {
     return out << "(" << p.x << ", " << p.y << ", " << p.z << ")";
 }
+
+float norm(const Point3& a, const Point3& b)
+{
+  float vx = b.x - a.x;
+  float vy = b.y - a.y;
+  float vz = b.z - a.z;
+  return sqrt(vx * vx + vy * vy + vz * vz);
+}
+
+float norm(const Point3& a, const Vector3& b)
+{
+  float vx = b.x - a.x;
+  float vy = b.y - a.y;
+  float vz = b.z - a.z;
+  return sqrt(vx * vx + vy * vy + vz * vz);
+}

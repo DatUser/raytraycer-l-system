@@ -24,6 +24,11 @@ class Texture_Material
     virtual SurfaceInfo get_point_info(unsigned int x, unsigned int y) const
       = 0;
 
+    ~Texture_Material()
+    {
+      free(surface);
+    }
+
   protected:
     //Couleurs de la surface
     RGB8 surface;

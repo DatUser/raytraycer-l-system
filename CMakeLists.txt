@@ -16,6 +16,7 @@ set(SRC "src/utils/point3.cc"
     "src/utils/sphere.cc"
     "src/utils/scene.cc"
     "src/utils/uniform-texture.cc"
+    "src/utils/camera.cc"
     "src/tp1.cc")
 
 
@@ -25,7 +26,7 @@ project(Raytracer)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OPT_FLAGS} -Wall -Werror -Wextra -pedantic")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g3 -fsanitize=address")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g3")# -fsanitize=address")
 
 if (NOT CMAKE_BUILD_TYPE)
     message("No build type selected, default release")

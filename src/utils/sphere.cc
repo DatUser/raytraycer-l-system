@@ -8,18 +8,19 @@ Sphere::Sphere(Point3& center, float radius, Texture_Material* texture)
   texture(texture)
 {}
 
-std::optional<Point3> Sphere::intersect(const Point3& p, const Vector3& v) const
+std::optional<Vector3> Sphere::intersect(const Vector3& origin,
+    const Vector3& direction) const
 {
-  Vector3 q = Vector3(center, p);
-  float a = v ^ v;
-  float b = v ^ q * 2.0f;
+  Vector3 q(origin.x - center.x, origin.y - center.y, origin.z - center.z);
+  float a = direction ^ direction;
+  float b = direction ^ q * 2;
   float c = (q ^ q) - radius * radius;
   float d = b * b - a * c * 4.0f;
 
   if (d >= 0)
   {
     float t = (-b + sqrt(d))/(2.0f * a);
-    return std::optional<Point3>{p + v * t};
+    return std::optional<Vector3>{origin + (direction * t)};
   }
 
   return std::nullopt;
@@ -31,7 +32,7 @@ Vector3 Sphere::get_normal(const Point3& p) const
   return Vector3(center, p).get_normalized();
 }
 
-SurfaceInfo Sphere::get_texture(const Point3& p) const
+SurfaceInfo Sphere::get_texture(const Vector3& p) const
 {
   if (p.x == 0)
     return texture->get_point_info(0, 0);

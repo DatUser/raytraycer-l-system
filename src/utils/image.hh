@@ -9,16 +9,17 @@ typedef uint8_t* __restrict__ __attribute__((aligned(TL_IMAGE_ALIGNMENT))) RGB8;
 
 class Image
 {
-  Image(unsigned int width, unsigned int height);
+  public:
+    Image(unsigned int width, unsigned int height);
 
-  ~Image();
+    ~Image();
 
-  void save();
+    void save();
 
-  void put_pixel(unsigned int x, unsigned int y, uint8_t r, uint8_t g,
-      uint8_t b);
+    void put_pixel(unsigned int x, unsigned int y, uint8_t r, uint8_t g,
+	uint8_t b);
 
-  private:
+  //private:
     unsigned int width;
     unsigned int height;
     RGB8 pixels;
