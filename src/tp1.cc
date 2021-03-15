@@ -6,6 +6,7 @@
 #include <utils/sphere.hh>
 #include <utils/camera.hh>
 #include <utils/scene.hh>
+#include <utils/triangle.hh>
 
 int main()
 {
@@ -30,10 +31,20 @@ int main()
   Vector3 up(0, 1, 0);
   Camera camera(center_cam, center_s1, up, 120, 80, 15);
 
+  Point3 a(0, 0, 20);
+  Point3 b(5, 0, 20);
+  Point3 c(0, 5, 20);
+  RGB8 color3 = (RGB8) aligned_alloc(TL_IMAGE_ALIGNMENT, 3);
+  color2[0] = 0;
+  color2[1] = 0;
+  color2[2] = 255;
+  Texture_Material* texture3 = new Uniform_Texture(color3, 0.5, 0.5);
+  Triangle t1(a, b, c, texture3);
+
   //TEST
-  Vector3 project_p(50, 0, 15);
+  Vector3 project_p(0, 0, 15);
   Vector3 u_vec(0, 0, 1);
-  auto intersection = s2.intersect(project_p, u_vec);
+  auto intersection = t1.intersect(project_p, u_vec);
   if (intersection.has_value())
     std::cout << "This is touching" << std::endl;
   else
@@ -41,14 +52,13 @@ int main()
   //
 
   Scene scene(camera);
-  scene.add_object(&s1);
-  scene.add_object(&s2);
+  //scene.add_object(&s1);
+  //scene.add_object(&s2);
+  scene.add_object(&t1);
   scene.capture_image(img);
 
   img.save();
 
-  /*free(texture);
-  free(texture2);*/
 
   return 0;
 }

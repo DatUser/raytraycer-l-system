@@ -77,6 +77,11 @@ std::ostream& operator<<(std::ostream& out, Vector3& vect)
   return out << "(" << vect.x << ", " << vect.y << ", " << vect.z << ")";
 }
 
+float operator^(const Vector3& v, const Point3& p)
+{
+    return v.x * p.x + v.y * p.y + v.z * p.z;
+}
+
 float norm(const Vector3& a, const Vector3& b)
 {
   float vx = b.x - a.x;

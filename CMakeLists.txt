@@ -17,6 +17,7 @@ set(SRC "src/utils/point3.cc"
     "src/utils/scene.cc"
     "src/utils/uniform-texture.cc"
     "src/utils/camera.cc"
+    "src/utils/triangle.cc"
     "src/tp1.cc")
 
 

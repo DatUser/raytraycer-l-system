@@ -45,7 +45,6 @@ class Vector3
 
 std::ostream& operator<<(std::ostream& out, Vector3 &vect);
 
+float operator^(const Vector3& v, const Point3& p);
+
 float norm(const Vector3& a, const Vector3& b);
-float norm(const Point3& a, const Point3& b);
-float norm(const Point3& a, const Point3& b);
-float norm(const Point3& a, const Point3& b);
