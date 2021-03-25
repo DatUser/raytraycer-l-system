@@ -5,7 +5,7 @@
 struct SurfaceInfo
 {
   //Couleur
-  RGB8 color;
+  Color color;
   float kd;
   float ks;
 };
@@ -14,7 +14,7 @@ class Texture_Material
 {
   public:
 
-    Texture_Material(RGB8 surface, float kd, float ks)
+    Texture_Material(std::vector<Color>& surface, float kd, float ks)
     : surface(surface),
       kd(kd),
       ks(ks)
@@ -26,12 +26,12 @@ class Texture_Material
 
     ~Texture_Material()
     {
-      free(surface);
+      //free(surface);
     }
 
   protected:
     //Couleurs de la surface
-    RGB8 surface;
+    std::vector<Color> surface;
     //Composant diffuse
     float kd;//[0 - 1]
     //Composante speculaire

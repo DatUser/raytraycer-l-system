@@ -3,9 +3,17 @@
 #include <cstdint>
 #include <fstream>
 
-#define TL_IMAGE_ALIGNMENT 64
+//#define TL_IMAGE_ALIGNMENT 64
 
-typedef uint8_t* __restrict__ __attribute__((aligned(TL_IMAGE_ALIGNMENT))) RGB8;
+//typedef uint8_t* __restrict__ __attribute__((aligned(TL_IMAGE_ALIGNMENT))) RGB8;
+
+typedef struct
+{
+   // 0 - 255
+   float r;
+   float g;
+   float b;
+} Color;
 
 class Image
 {
@@ -22,5 +30,5 @@ class Image
   //private:
     unsigned int width;
     unsigned int height;
-    RGB8 pixels;
+    Color pixels;
 };

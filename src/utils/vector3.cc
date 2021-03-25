@@ -50,13 +50,13 @@ float Vector3::operator^(const Vector3& v) const
 
 Vector3 Vector3::get_normalized() const
 {
-  float norm = sqrt(x * x + y * y + z * z);
+  //float norm = sqrt(x * x + y * y + z * z);
   return Vector3(x / norm, y / norm, z / norm);
 }
 
 void Vector3::normalize()
 {
-  float norm = sqrt(x * x + y * y + z * z);
+  //float norm = sqrt(x * x + y * y + z * z);
   x /= norm;
   y /= norm;
   z /= norm;

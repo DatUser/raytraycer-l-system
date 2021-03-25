@@ -69,24 +69,20 @@ SurfaceInfo Scene::find_color(const Vector3& v, const Vector3& forward) const
   return info;
 }
 
+void Scene::compute_light(Point3& hitpoint, const Object& object)
+{
+    for (unsigned int i = 0; i < lights.size(); i++)
+    {
+
+    }
+}
+
 void Scene::capture_image(Image& image) const
 {
   float width = (camera.z_pos * tan(camera.x_angle / 2 * M_PI / 180)) * 2 ;
   float left_shift = width / 2;
   float height = (camera.z_pos * tan(camera.y_angle / 2 * M_PI / 180)) * 2 ;
   float down_shift = height / 2;
-  //Vector3 begin = Vector3(0, 0, camera.z_pos);
-  //std::cout << "Start: " << begin << std::endl;
-
-  //float angle = -camera.y_angle / 2;
-  //std::cout << "angle: " << angle << std::endl;
-  //rotateAroundX(begin, angle);
-  //std::cout << "Start up: " << begin << std::endl;
-  //rotateAroundY(begin, -camera.x_angle / 2);
-  //std::cout << "Start: " << begin << std::endl;
-  //float v = camera.x_angle * camera.z_pos / 1920;
-  //float down_shift = camera.y_angle / image.height;
-  //float right_shift = camera.x_angle / image.width;
 
   Vector3 y = camera.up;
   Vector3 z = Vector3(camera.center, camera.target).get_normalized();
@@ -114,8 +110,10 @@ void Scene::capture_image(Image& image) const
       //projection.normalize();
       SurfaceInfo texture = find_color(projection, z);
       if (texture.color)
-        image.put_pixel(i, j, texture.color[0], texture.color[1],
-	  texture.color[2]);
+      {
+          image.put_pixel(i, j, texture.color[0], texture.color[1],
+                          texture.color[2]);
+      }
       else
         image.put_pixel(i, j, 0, 0, 0);
       

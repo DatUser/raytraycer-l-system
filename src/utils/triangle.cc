@@ -16,7 +16,7 @@ std::optional<Vector3> Triangle::intersect(const Vector3& origin,
     float D = normal ^ a;
     //Here we do not need to negate since the z vector of the camera
     //and projection vector have the same orientation
-    float t = ((normal ^ origin) + D) / (normal ^ direction);
+    float t = - ((normal ^ origin) + D) / (normal ^ direction);
     if ((normal ^ direction) != 0 && t > 0)
     {
         Vector3 hit = origin + direction * t;
