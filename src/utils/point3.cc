@@ -1,6 +1,6 @@
 #include "point3.hh"
 #include <ostream>
-
+/*
 Point3::Point3(float _x, float _y, float _z)
 : x(_x),
   y(_y),
@@ -47,3 +47,4 @@ float norm(const Point3& a, const Vector3& b)
   float vz = b.z - a.z;
   return sqrt(vx * vx + vy * vy + vz * vz);
 }
+*/

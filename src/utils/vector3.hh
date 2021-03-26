@@ -4,12 +4,12 @@
 #include <math.h>
 #include "point3.hh"
 
-class Point3;
+//class Point3;
 
 class Vector3
 {
   public:
-    Vector3(const Point3& a, const Point3& b);
+    Vector3(const Vector3& a, const Vector3& b);
 
     Vector3(float x, float y, float z);
 
@@ -21,17 +21,17 @@ class Vector3
 
     Vector3 operator+(const Vector3& v) const;
 
-    //Produit vectoriel
     Vector3 operator*(const Vector3& v) const;
 
-    //Produit scalaire
-    float operator^(const Vector3& v) const;
+    void operator+=(const Vector3& v);
 
     Vector3 get_normalized() const;
 
     void normalize();
 
     static Vector3 zero();
+
+    Vector3 clamp();
 
     float x;
     float y;
@@ -45,6 +45,15 @@ class Vector3
 
 std::ostream& operator<<(std::ostream& out, Vector3 &vect);
 
-float operator^(const Vector3& v, const Point3& p);
+//Produit vectoriel
+Vector3 crossProd(const Vector3& v1, const Vector3& v2);
+
+//Produit scalaire
+float dotProd(const Vector3& v1, const Vector3& v2);
+
+//float operator^(const Vector3& v, const Point3& p);
 
 float norm(const Vector3& a, const Vector3& b);
+
+typedef Vector3 Color;
+typedef Vector3 Point3;

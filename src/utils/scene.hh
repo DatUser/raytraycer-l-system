@@ -1,5 +1,7 @@
 #pragma once
 
+#define MAX_DEPTH 3
+
 #include <vector>
 #include <limits>
 #include "object.hh"
@@ -15,14 +17,16 @@ class Scene
 
     void add_object(Object* object);
 
+    void add_light(Light& light);
+
   private:
     Vector3 project_vector(const Vector3& v, const Vector3& x_basis,
 	const Vector3& y_basis, const Vector3& z_basis,
 	const Vector3& translation) const;
 
-    void compute_light(Point3& hitpoint, const Object& object);
+    Color compute_light(const Point3& hitpoint, const Object& object, int depth) const;
 
-    SurfaceInfo find_color(const Vector3& v, const Vector3& forward) const;
+    Color find_color(const Vector3& v, const Vector3& forward, int depth) const;
 
     std::vector<Object*> objects;
     std::vector<Light> lights;

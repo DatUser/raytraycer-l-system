@@ -40,12 +40,14 @@ Vector3 Vector3::operator+(const Vector3& v) const
 
 Vector3 Vector3::operator*(const Vector3& v) const
 {
-  return Vector3(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x);
+    return Vector3(x * v.x, y * v.y, z * v.z);
 }
 
-float Vector3::operator^(const Vector3& v) const
+void Vector3::operator+=(const Vector3& v)
 {
-  return x * v.x + y * v.y + z *v.z;
+    x += v.x;
+    y += v.y;
+    z += v.z;
 }
 
 Vector3 Vector3::get_normalized() const
@@ -72,14 +74,26 @@ Vector3 Vector3::zero()
   return *(Vector3::m_zero = new Vector3(0, 0, 0));
 }
 
+Vector3 Vector3::clamp()
+{
+    return Vector3(std::min<float>(std::max<float>(x, 0), 1),
+                   std::min<float>(std::max<float>(y, 0), 1),
+                   std::min<float>(std::max<float>(z, 0), 1));
+}
+
 std::ostream& operator<<(std::ostream& out, Vector3& vect)
 {
   return out << "(" << vect.x << ", " << vect.y << ", " << vect.z << ")";
 }
 
-float operator^(const Vector3& v, const Point3& p)
+Vector3 crossProd(const Vector3& v1, const Vector3& v2)
 {
-    return v.x * p.x + v.y * p.y + v.z * p.z;
+    return Vector3(v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x);
+}
+
+float dotProd(const Vector3& v1, const Vector3& v2)
+{
+    return v1.x * v2.x + v1.y * v2.y + v1.z *v2.z;
 }
 
 float norm(const Vector3& a, const Vector3& b)

@@ -1,8 +1,5 @@
 #include "scene.hh"
 #include <cmath>
-#include <iostream>
-#include <iterator>
-#include <ostream>
 
 Scene::Scene(Camera camera)
 : objects(std::vector<Object*>()),
@@ -43,38 +40,43 @@ Vector3 Scene::project_vector(const Vector3& v, const Vector3& x_basis,
       z_world - camera.center.z);
 }
 
-SurfaceInfo Scene::find_color(const Vector3& v, const Vector3& forward) const
+Color Scene::find_color(const Vector3& v, const Vector3& forward, int depth) const
 {
   float closest = std::numeric_limits<float>::max();
-  SurfaceInfo info = { nullptr, 0, 0 };
 
+  Color color {0,0,0};
   std::optional<Vector3> intersection;
   float p_norm = 0;
-
-  /*Vector3 forward2(v.x - camera.center.x, v.y - camera.center.y, v.z - camera.center.z);
-  if (forward.z == 1)
-    forward2.normalize();*/
 
   for (unsigned int i = 0; i < objects.size(); i++)
   {
     const Object* obj = objects[i];
-    if ((intersection = obj->intersect(/*camera.center, v*/v, forward)).has_value() &&
-	  (p_norm = norm(camera.center, intersection.value())) < closest) 
+    if ((intersection = obj->intersect(v, forward)).has_value() &&
+	  (p_norm = norm(camera.center, intersection.value())) < closest) //
     {
       closest = p_norm;
-      info = obj->get_texture(intersection.value());
+      color = compute_light(intersection.value(), *obj, depth);
     }
   }
 
-  return info;
+  return color;
 }
 
-void Scene::compute_light(Point3& hitpoint, const Object& object)
+Color Scene::compute_light(const Point3& hitpoint, const Object& object, int depth) const
 {
+    (void) depth;
+    Color color = {0,0,0};
+
     for (unsigned int i = 0; i < lights.size(); i++)
     {
+        Light light = lights[i];
+        SurfaceInfo info = object.get_texture(hitpoint);
+        Vector3 light_v = Vector3(hitpoint, light.get_position()).get_normalized();
+        color += info.color * dotProd(object.get_normal(hitpoint), light_v) * light.get_color() * info.kd ;
 
     }
+
+    return color;
 }
 
 void Scene::capture_image(Image& image) const
@@ -86,50 +88,32 @@ void Scene::capture_image(Image& image) const
 
   Vector3 y = camera.up;
   Vector3 z = Vector3(camera.center, camera.target).get_normalized();
-  Vector3 x = y * z;
+  Vector3 x = crossProd(y, z);
   Vector3 translation = Vector3(camera.center.x, camera.center.y,
       camera.center.z);
 
   for (unsigned int i = 0; i < image.height; i++)
   {
     float v_y = (image.height - i - 0.5) * height / image.height - down_shift;
-    //std::cout << "vector y is: " << v_y << std::endl;
-    //std::cout << begin << "-->";
     for (unsigned int j = 0; j < image.width; j++)
     {
       float v_x =  (j + 0.5)  * width / image.width - left_shift;
-      /*if (i == 0)
-        std::cout << "vector x is: " << v_x << std::endl;*/
-
       Vector3 projection = project_vector(Vector3(v_x, v_y, camera.z_pos), x, y, z,
 	  translation);
 
-      /*if (i == 0)
-	std::cout << projection << std::endl;*/
-
-      //projection.normalize();
-      SurfaceInfo texture = find_color(projection, z);
-      if (texture.color)
-      {
-          image.put_pixel(i, j, texture.color[0], texture.color[1],
-                          texture.color[2]);
-      }
-      else
-        image.put_pixel(i, j, 0, 0, 0);
-      
-      //shifts right
-      //rotateAroundY(begin, right_shift);
+      Color color = find_color(projection, z, 0);
+      color.clamp();
+      image.put_pixel(i, j, color);
     }
-    //std::cout << begin << std::endl;
-
-    //shifts left
-    //rotateAroundY(begin, -camera.x_angle);
-    //shifts down
-    //rotateAroundX(begin, down_shift);
   }
 }
 
 void Scene::add_object(Object* object)
 {
   objects.push_back(object);
+}
+
+void Scene::add_light(Light& light)
+{
+    lights.push_back(light);
 }

@@ -12,9 +12,9 @@ std::optional<Vector3> Sphere::intersect(const Vector3& origin,
     const Vector3& direction) const
 {
   Vector3 q(origin.x - center.x, origin.y - center.y, origin.z - center.z);
-  float a = direction ^ direction;
-  float b = direction ^ q * 2;
-  float c = (q ^ q) - radius * radius;
+  float a = dotProd(direction, direction);
+  float b = dotProd(direction, q) * 2;
+  float c = (dotProd(q, q)) - radius * radius;
   float d = b * b - a * c * 4.0f;
 
   if (d >= 0)

@@ -4,14 +4,14 @@
 
 Image::Image(unsigned int width, unsigned int height)
 : width(width),
-  height(height)
+  height(height),
+  pixels(new uint8_t[width * height * 3])
 {
-  pixels = (RGB8) aligned_alloc(TL_IMAGE_ALIGNMENT, width * height * 3);
 }
 
 Image::~Image()
 {
-  free(pixels);
+    delete[] pixels;
 }
 
 void Image::save()
@@ -33,13 +33,30 @@ void Image::save()
   ofs.close();
 }
 
-void Image::put_pixel(unsigned int x, unsigned int y, uint8_t r, uint8_t g,
-    uint8_t b)
+void Image::put_pixel(unsigned int x, unsigned int y, Color& color)
 {
   if (x < height && y < width)
   {
-    pixels[(x * width + y) * 3] = r;
-    pixels[(x * width + y) * 3 + 1] = g;
-    pixels[(x * width + y) * 3 + 2] = b;
+    pixels[(x * width + y) * 3] = static_cast<uint8_t>(color.x * 255.0);
+    pixels[(x * width + y) * 3 + 1] = static_cast<uint8_t>(color.y * 255.0);;
+    pixels[(x * width + y) * 3 + 2] = static_cast<uint8_t>(color.z * 255.0);;
   }
+}
+
+void Image::save_file()
+{
+    std::ofstream file("out.txt");
+
+    for (unsigned int x = 0; x < height; x++)
+    {
+        for (unsigned int y = 0; y < width; y++)
+        {
+            file << '(' << (int) pixels[(x * width + y) * 3] << ',';
+            file << (int) pixels[(x * width + y) * 3 + 1] << ',';
+            file << (int) pixels[(x * width + y) * 3 + 2] << ')';
+        }
+        file << std::endl;
+    }
+
+    file.close();
 }

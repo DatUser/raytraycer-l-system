@@ -13,20 +13,20 @@ Triangle::Triangle(Point3& a, Point3& b, Point3& c, Texture_Material* texture)
 std::optional<Vector3> Triangle::intersect(const Vector3& origin,
     const Vector3& direction) const
 {
-    float D = normal ^ a;
+    float D = dotProd(normal, a);
     //Here we do not need to negate since the z vector of the camera
     //and projection vector have the same orientation
-    float t = - ((normal ^ origin) + D) / (normal ^ direction);
-    if ((normal ^ direction) != 0 && t > 0)
+    float t = - (dotProd(normal, origin) + D) / dotProd(normal, direction);
+    if (dotProd(normal, direction) != 0 && t > 0)
     {
         Vector3 hit = origin + direction * t;
         Vector3 A(a, b);
         Vector3 B(b, c);
         Vector3 C(c, a);
 
-        if ((A ^ Vector3(hit.x - a.x, hit.y - a.y, hit.z - a.z)) > 0 &&
-            (B ^ Vector3(hit.x - b.x, hit.y - b.y, hit.z - b.z)) > 0 &&
-            (C ^ Vector3(hit.x - c.x, hit.y - c.y, hit.z - c.z)) > 0)
+        if (dotProd(A, Vector3(hit.x - a.x, hit.y - a.y, hit.z - a.z)) > 0 &&
+            dotProd(B, Vector3(hit.x - b.x, hit.y - b.y, hit.z - b.z)) > 0 &&
+            dotProd(C, Vector3(hit.x - c.x, hit.y - c.y, hit.z - c.z)) > 0)
             return std::optional<Vector3>{ hit };
 
         return std::nullopt;

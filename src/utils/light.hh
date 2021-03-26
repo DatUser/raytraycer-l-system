@@ -7,23 +7,23 @@ class Light
 {
   public:
 
-    Light(Point3& position, float intensity, uint8_t r, uint8_t g, uint8_t b)
+    Light(Point3& position, float r, float g, float b)
     : position(position),
-      intensity(intensity),
-      color((RGB8)aligned_alloc(TL_IMAGE_ALIGNMENT, 3))
+      //intensity(intensity),
+      color({r, g, b})
     {
-      color[0] = r;
-      color[1] = g;
-      color[2] = b;
     }
 
-    ~Light()
-    {
-      delete color;
-    }
+    const Point3& get_position() const;
+
+    const Color& get_color() const;
+
+    ~Light() = default;
 
   protected:
     Point3 position;
-    float intensity;
-    RGB8 color;
+    //float intensity;
+    Color color;
 };
+
+#include <light.hxx>
