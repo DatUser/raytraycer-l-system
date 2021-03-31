@@ -5,20 +5,22 @@
 
 struct SurfaceInfo
 {
-  //Couleur
+  //Color
   Color color;
   float kd;
   float ks;
+  float ns;
 };
 
 class Texture_Material
 {
   public:
 
-    Texture_Material(std::vector<Color>& surface, float kd, float ks)
+    Texture_Material(std::vector<Color>& surface, float kd, float ks, float ns)
     : surface(surface),
       kd(kd),
-      ks(ks)
+      ks(ks),
+      ns(ns)
     {
     }
 
@@ -31,10 +33,11 @@ class Texture_Material
     }
 
   protected:
-    //Couleurs de la surface
+    //Surface color
     std::vector<Color> surface;
-    //Composant diffuse
+    //Diffuse Component
     float kd;//[0 - 1]
-    //Composante speculaire
+    //Specular component
     float ks;//[0 - 1]
+    float ns;
 };

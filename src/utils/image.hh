@@ -21,5 +21,5 @@ class Image
   //private:
     unsigned int width;
     unsigned int height;
-    uint8_t* pixels;
+    std::vector<uint8_t > pixels;
 };

@@ -74,11 +74,13 @@ Vector3 Vector3::zero()
   return *(Vector3::m_zero = new Vector3(0, 0, 0));
 }
 
-Vector3 Vector3::clamp()
+Vector3 Vector3::clamp(float min, float max)
 {
-    return Vector3(std::min<float>(std::max<float>(x, 0), 1),
-                   std::min<float>(std::max<float>(y, 0), 1),
-                   std::min<float>(std::max<float>(z, 0), 1));
+    x = std::min<float>(std::max<float>(x, min), max);
+    y = std::min<float>(std::max<float>(y, min), max);
+    z = std::min<float>(std::max<float>(z, min), max);
+
+    return *this;
 }
 
 std::ostream& operator<<(std::ostream& out, Vector3& vect)

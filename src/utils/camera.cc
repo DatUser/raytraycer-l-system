@@ -7,5 +7,9 @@ Camera::Camera(Point3& center, Point3& target, Vector3& up, float x_angle,
   up(up),
   x_angle(x_angle),
   y_angle(y_angle),
-  z_pos(z_pos)
-{}
+  z_pos(z_pos),
+  y(up),
+  z(Vector3(center, target).get_normalized()),
+  x(crossProd(y, z))
+{
+}

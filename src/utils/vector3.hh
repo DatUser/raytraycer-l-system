@@ -8,7 +8,7 @@
 
 class Vector3
 {
-  public:
+public:
     Vector3(const Vector3& a, const Vector3& b);
 
     Vector3(float x, float y, float z);
@@ -31,7 +31,7 @@ class Vector3
 
     static Vector3 zero();
 
-    Vector3 clamp();
+    Vector3 clamp(float min=0, float max=1);
 
     float x;
     float y;

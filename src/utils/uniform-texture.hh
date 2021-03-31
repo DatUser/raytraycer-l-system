@@ -6,7 +6,7 @@ class Uniform_Texture : public Texture_Material
 {
   public:
 
-    Uniform_Texture(std::vector<Color>& color, float kd, float ks);
+    Uniform_Texture(std::vector<Color>& color, float kd, float ks, float ns);
 
     ~Uniform_Texture();
 

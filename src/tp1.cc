@@ -11,23 +11,26 @@
 int main()
 {
   Image img(1920, 1080);
-  Point3 center_s1(0, 0, 20);
-  Color color{1,0,0,};
+  Point3 center_s1(-5, 0, 20);
+  //Color color{0.71,0.1,0.1};
+  Color color{0.71,0.1,0};
   std::vector<Color> colors_t1;
   colors_t1.push_back(color);
-  Texture_Material* texture = new Uniform_Texture(colors_t1, 0.5, 0.5);
+  Texture_Material* texture = new Uniform_Texture(colors_t1, 0.7, 0.1, 2);
   Sphere s1(center_s1, 3, texture);
 
-  Point3 center_s2(4, 0, 23);
-  Color color2{0,1,0};
+  Point3 center_s2(5, 0, 20);
+  //Color color2{0.1,0.71,0.1};
+  Color color2{0.1,0.71,0};
   std::vector<Color> colors_t2;
   colors_t2.push_back(color2);
-  Texture_Material* texture2 = new Uniform_Texture(colors_t2, 0.5, 0.5);
+  Texture_Material* texture2 = new Uniform_Texture(colors_t2, 0.7, 0.1, 20);
   Sphere s2(center_s2, 3, texture2);
 
   Point3 center_cam(0, 0, 0);
   Vector3 up(0, 1, 0);
-  Camera camera(center_cam, center_s1, up, 120, 80, 15);
+  Point3 target(0,0,15);
+  Camera camera(center_cam, target, up, 120, 80, 15);
 
   /*Point3 a(0, 0, -20);
   Point3 b(-5, 0, -20);
@@ -48,8 +51,8 @@ int main()
   else
     std::cout << "No intersection" << std::endl;*/
   //
-  Point3 light_pos(0,15, 0);
-  Light light(light_pos, 1,1,1);
+  Point3 light_pos(0, 7, 20);
+  Light light(light_pos, 0,0,1);
 
   Scene scene(camera);
   scene.add_object(&s1);
@@ -57,6 +60,9 @@ int main()
   //scene.add_object(&t1);
   scene.add_light(light);
   scene.capture_image(img);
+
+  Color c = Color(1,0,0);
+  img.put_pixel(530, 780,c);
 
   img.save();
   img.save_file();
