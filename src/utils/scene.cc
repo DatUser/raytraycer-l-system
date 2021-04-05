@@ -37,7 +37,7 @@ Vector3 Scene::project_vector(const Vector3 &v, const Vector3 &x_basis,
 }
 
 Color Scene::find_color(const Point3 &origin, const Vector3 &forward, int depth, const Object* source) const {
-    if (depth >= 6)
+    if (depth >= 3)
         return Color(0, 0, 0);
 
     float closest = std::numeric_limits<float>::max();
@@ -52,9 +52,10 @@ Color Scene::find_color(const Point3 &origin, const Vector3 &forward, int depth,
             (p_norm = norm(camera.center, intersection.value())) < closest &&
             dotProd(camera.z, (intersection.value() - camera.center)) > 0) //
         {
-            closest = p_norm;
-            if (obj != source)
+            if (obj != source) {
+                closest = p_norm;
                 color = compute_light(origin, intersection.value(), obj, depth);
+            }
         }
     }
 
@@ -66,7 +67,7 @@ Color Scene::compute_light(const Point3 &origin, const Point3 &hitpoint, const O
         return Color(0, 0, 0);*/
     Color color = {0, 0, 0};
     (void) origin;
-    Vector3 incoming = Vector3(hitpoint, origin).get_normalized();
+    Vector3 incoming = Vector3(origin, hitpoint).get_normalized();
 
     for (unsigned int i = 0; i < lights.size(); i++) {
 
@@ -74,6 +75,7 @@ Color Scene::compute_light(const Point3 &origin, const Point3 &hitpoint, const O
 
         //Compute diffuse
         SurfaceInfo info = object->get_texture(hitpoint);
+        //Collision to light
         Vector3 light_v = Vector3(hitpoint, light.get_position()).get_normalized();
         Vector3 n = object->get_normal(hitpoint);
         float d = dotProd(light_v, n);
@@ -83,11 +85,12 @@ Color Scene::compute_light(const Point3 &origin, const Point3 &hitpoint, const O
         //Compute specular component
 
         //Calculate reflected vector
-        Vector3 s = incoming - n * 2 * dotProd(incoming, n);// - incoming;
+        Vector3 s = incoming - n * 2 * dotProd(incoming.get_normalized(), n);// - incoming;
 
         float d2 = dotProd(s, light_v);
 
-        if (d2 > 0) {
+        if (d2 > 0)
+        {
             Color spec = light.get_color() * info.ks * std::pow(d2, info.ns);
             color += spec;
         }
@@ -117,7 +120,7 @@ void Scene::capture_image(Image &image) const {
             Vector3 projection = project_vector(Vector3(v_x, v_y, camera.z_pos),
                                                 camera.x, camera.y, camera.z, translation);
 
-            Color color = find_color(projection, /*z*/Vector3(camera.center, projection), 0);
+            Color color = find_color(projection, /*z*/projection.get_normalized(), 0);
             color.clamp();
             image.put_pixel(i, j, color);
         }
