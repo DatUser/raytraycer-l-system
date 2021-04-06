@@ -101,6 +101,8 @@ Color Scene::compute_light(const Point3 &origin, const Point3 &hitpoint, const O
     return color;
 }
 
+const unsigned int ALIASING_RAY = 5;
+
 void Scene::capture_image(Image &image) const {
     float width = (camera.z_pos * tan(camera.x_angle / 2 * M_PI / 180)) * 2;
     float left_shift = width / 2;
@@ -114,14 +116,20 @@ void Scene::capture_image(Image &image) const {
                                   camera.center.z);
 
     for (unsigned int i = 0; i < image.height; i++) {
-        float v_y = (image.height - i - 0.5) * height / image.height - down_shift;
         for (unsigned int j = 0; j < image.width; j++) {
-            float v_x = (image.width - j - 0.5) * width / image.width - left_shift;
-            Vector3 projection = project_vector(Vector3(v_x, v_y, camera.z_pos),
-                                                camera.x, camera.y, camera.z, translation);
+            Color color = Color(0,0,0);
+            //multiple ray per pixel (anti-aliasing)
+            for (unsigned int k = 0; k < ALIASING_RAY; k++) {
+                float v_y = (image.height - i - 0.5) * height / image.height - down_shift;
+                float v_x = (image.width * ALIASING_RAY - (j * ALIASING_RAY + k) - 0.5) * width / (image.width * ALIASING_RAY) - left_shift;
+                Vector3 projection = project_vector(Vector3(v_x, v_y, camera.z_pos),
+                                                    camera.x, camera.y, camera.z, translation);
 
-            Color color = find_color(projection, /*z*/projection.get_normalized(), 0);
-            color.clamp();
+                Color color_tmp = find_color(projection, /*z*/projection.get_normalized(), 0);
+                color_tmp.clamp();
+                color += color_tmp;
+            }
+            color = color * (0.2);
             image.put_pixel(i, j, color);
         }
     }

@@ -26,7 +26,7 @@ int main() {
     Texture_Material *texture2 = new Uniform_Texture(colors_t2, 0.7, 0.1, 20);
     Sphere s2(center_s2, 3, texture2);
 
-    Point3 center_cam(0, 0, 0);
+    Point3 center_cam(3, 5, 5);
     Vector3 up(0, 1, 0);
     Point3 target(0, 0, 15);
     Camera camera(center_cam, target, up, 120, 80, 15);
@@ -76,7 +76,7 @@ int main() {
     img.put_pixel(530, 1920 - 1 - shift,c2);*/
 
     img.save();
-    img.save_file();
+    //img.save_file();
 
 
     return 0;
