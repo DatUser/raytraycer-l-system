@@ -7,6 +7,7 @@
 #include <utils/camera.hh>
 #include <utils/scene.hh>
 #include <utils/triangle.hh>
+#include <utils/plane.hh>
 
 int main() {
     Image img(1920, 1080);
@@ -26,10 +27,27 @@ int main() {
     Texture_Material *texture2 = new Uniform_Texture(colors_t2, 0.7, 0.1, 20);
     Sphere s2(center_s2, 3, texture2);
 
-    Point3 center_cam(3, 5, 5);
-    Vector3 up(0, 1, 0);
-    Point3 target(0, 0, 15);
-    Camera camera(center_cam, target, up, 120, 80, 15);
+    Point3 center_s3(5, -2005, 20);
+    //Color color2{0.1,0.71,0.1};
+    Color color3{0.8, 0.8, 0.8};
+    std::vector<Color> colors_t3;
+    colors_t3.push_back(color3);
+    Texture_Material *texture3 = new Uniform_Texture(colors_t3, 0.7, 0.1, 20);
+    Sphere s3(center_s3, 2000, texture3);
+
+    /*Point3 plane_O(0,-5,0);
+    Point3 plane_x(1,-5,0);
+    Point3 plane_y(0,-5,1);
+    Color color3(1,1,1);
+    std::vector<Color> colors_p;
+    colors_p.push_back(color3);
+    Texture_Material *textureP = new Uniform_Texture(colors_p, 0.7, 0.1, 20);
+    Plane plane(plane_O,plane_x,plane_y, textureP);*/
+
+    Point3 center_cam(0, 10, 10);
+    Vector3 up = Vector3(0, 1, 1).get_normalized();
+    Point3 target(0, 0, 20);
+    Camera camera(center_cam, target, up, 90, 90 * ((float)img.height / (float) img.width), 10);
 
     /*Point3 a(0, 0, -20);
     Point3 b(-5, 0, -20);
@@ -56,13 +74,15 @@ int main() {
     Scene scene(camera);
     scene.add_object(&s1);
     scene.add_object(&s2);
+    scene.add_object(&s3);
+    //scene.add_object(&plane);
     //scene.add_object(&t1);
     scene.add_light(light);
     scene.capture_image(img);
 
     //Fix reflection issue
-    /*Color c = Color(0,0,1);
-    img.put_pixel(535, 1033,c);*/
+    Color c = Color(0,0,1);
+    img.put_pixel(835, 1033,c);
 
     //Fix light problem
     /*Color c = Color(1,0,0);

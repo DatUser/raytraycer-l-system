@@ -1,6 +1,9 @@
 #include "scene.hh"
 #include <cmath>
 
+const unsigned int ALIASING_RAY = 5;
+const Color ambient{0.05,0.05,0.05};
+
 Scene::Scene(Camera camera)
         : objects(std::vector<Object *>()),
           lights(std::vector<Light>()),
@@ -32,8 +35,8 @@ Vector3 Scene::project_vector(const Vector3 &v, const Vector3 &x_basis,
                     + translation.y;
     float z_world = v.x * x_basis.z + v.y * y_basis.z + v.z * z_basis.z
                     + translation.z;
-    return Vector3(x_world - camera.center.x, y_world - camera.center.y,
-                   z_world - camera.center.z);
+
+    return Vector3(x_world /*- camera.center.x*/, y_world /*- camera.center.y*/,z_world /*- camera.center.z*/);
 }
 
 Color Scene::find_color(const Point3 &origin, const Vector3 &forward, int depth, const Object* source) const {
@@ -42,7 +45,7 @@ Color Scene::find_color(const Point3 &origin, const Vector3 &forward, int depth,
 
     float closest = std::numeric_limits<float>::max();
 
-    Color color{0, 0, 0};
+    Color color = ambient;//{0, 0, 0};
     std::optional<Vector3> intersection;
     float p_norm = 0;
 
@@ -62,16 +65,40 @@ Color Scene::find_color(const Point3 &origin, const Vector3 &forward, int depth,
     return color;
 }
 
+bool Scene::intersect(const Point3& origin, const Vector3& direction, const Object* source) const
+{
+    std::optional<Vector3> intersection;
+    Object* closest_obj = NULL;
+    float closest = std::numeric_limits<float>().max();
+    float p_norm =0;
+    for (unsigned int i = 0; i < objects.size(); i++)
+    {
+        Object *obj = objects[i];
+        if ((intersection = obj->intersect(origin, direction)).has_value() &&
+            (p_norm = norm(camera.center, intersection.value())) < closest)
+        {
+            closest = p_norm;
+            closest_obj = obj;
+        }
+    }
+
+    return closest_obj != source;
+}
+
 Color Scene::compute_light(const Point3 &origin, const Point3 &hitpoint, const Object *object, int depth) const {
     /*if (depth >= 2)
         return Color(0, 0, 0);*/
-    Color color = {0, 0, 0};
+    Color color = ambient;//{0, 0, 0};
     (void) origin;
     Vector3 incoming = Vector3(origin, hitpoint).get_normalized();
 
     for (unsigned int i = 0; i < lights.size(); i++) {
 
         Light light = lights[i];
+        Vector3 light_rev = Vector3(light.get_position(), hitpoint).get_normalized();
+
+        if (intersect(light.get_position(), light_rev, object))
+            break;
 
         //Compute diffuse
         SurfaceInfo info = object->get_texture(hitpoint);
@@ -101,8 +128,6 @@ Color Scene::compute_light(const Point3 &origin, const Point3 &hitpoint, const O
     return color;
 }
 
-const unsigned int ALIASING_RAY = 5;
-
 void Scene::capture_image(Image &image) const {
     float width = (camera.z_pos * tan(camera.x_angle / 2 * M_PI / 180)) * 2;
     float left_shift = width / 2;
@@ -115,6 +140,8 @@ void Scene::capture_image(Image &image) const {
     Vector3 translation = Vector3(camera.center.x, camera.center.y,
                                   camera.center.z);
 
+    std::ofstream os("projected.txt");
+
     for (unsigned int i = 0; i < image.height; i++) {
         for (unsigned int j = 0; j < image.width; j++) {
             Color color = Color(0,0,0);
@@ -125,14 +152,20 @@ void Scene::capture_image(Image &image) const {
                 Vector3 projection = project_vector(Vector3(v_x, v_y, camera.z_pos),
                                                     camera.x, camera.y, camera.z, translation);
 
-                Color color_tmp = find_color(projection, /*z*/projection.get_normalized(), 0);
+                if (k == 0)
+                    os << projection;
+
+                Color color_tmp = find_color(projection, /*z*/(projection - camera.center).get_normalized(), 0);
                 color_tmp.clamp();
                 color += color_tmp;
             }
             color = color * (0.2);
             image.put_pixel(i, j, color);
         }
+        os << std::endl;
     }
+
+    os.close();
 }
 
 void Scene::add_object(Object *object) {

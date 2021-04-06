@@ -1,6 +1,7 @@
 #include "vector3.hh"
 #include <ostream>
 
+
 Vector3* Vector3::m_zero = nullptr;
 
 Vector3::Vector3(const Point3& a, const Point3& b)
