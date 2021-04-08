@@ -7,6 +7,7 @@ set(OPT_FLAGS
 include_directories(
     "src"
     "src/utils"
+    "src/parser"
 )
 
 # Searches for all .cc files
@@ -22,6 +23,7 @@ set(SRC "src/utils/point3.cc"
     "src/parser/parser.cc"
     "src/parser/node-f.cc"
     "src/parser/print-visitor.cc"
+    "src/parser/node-start.cc"
     "src/tp1.cc")
 
 

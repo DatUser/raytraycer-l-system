@@ -8,8 +8,10 @@
 #include <utils/scene.hh>
 #include <utils/triangle.hh>
 #include <utils/plane.hh>
+#include <parser/parser.hh>
+#include <parser/print-visitor.hh>
 
-int main() {
+int maintmp() {
     Image img(1920, 1080);
     Point3 center_s1(-5, 0, 20);
     //Color color{0.71,0.1,0.1};
@@ -103,4 +105,19 @@ int main() {
 
 
     return 0;
+}
+
+int main()
+{
+    Parser parser("test");
+
+    std::string rule = "FFF";
+    Point3 origin = Point3(0,0,0);
+    Vector3 direction = Vector3(1,0,0);
+    Node* node = parser.build_rule(rule, origin, direction, 2);
+    PrintVisitor printVisitor;
+
+    node->accept(printVisitor);
+
+    delete node;
 }

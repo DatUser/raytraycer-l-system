@@ -5,9 +5,15 @@ NodeF::NodeF()
 : direction(Vector3(0,0,1)),
   t(1)
 {
+    children = std::vector<Node*>();
 }
 
 NodeF::NodeF(Vector3& direction, float size)
 : direction(direction),
   t(size)
 {}
+
+void NodeF::accept(Visitor& visitor) const
+{
+    visitor.visit(*this);
+}
