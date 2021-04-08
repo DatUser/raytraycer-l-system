@@ -19,6 +19,9 @@ set(SRC "src/utils/point3.cc"
     "src/utils/camera.cc"
     "src/utils/triangle.cc"
     "src/utils/plane.cc"
+    "src/parser/parser.cc"
+    "src/parser/node-f.cc"
+    "src/parser/print-visitor.cc"
     "src/tp1.cc")
 
 
