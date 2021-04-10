@@ -112,3 +112,11 @@ float norm(const Vector3& a, const Vector3& b)
   float vz = b.z - a.z;
   return sqrt(vx * vx + vy * vy + vz * vz);
 }
+
+double Vector3::magnitudeSquared() const {
+    return  x*x + y*y + z*z;
+}
+
+Vector3 Vector3::operator-() const {
+    return Vector3(-x, -y, -z);
+}

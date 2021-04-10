@@ -16,6 +16,7 @@ set(SRC "src/utils/point3.cc"
     "src/utils/image.cc"
     "src/utils/sphere.cc"
     "src/utils/scene.cc"
+    "src/utils/cylinder.cc"
     "src/utils/uniform-texture.cc"
     "src/utils/camera.cc"
     "src/utils/triangle.cc"
@@ -47,7 +48,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "Test")
     target_sources(raytracer PRIVATE "tests/main.cc" ${SRC})
     target_link_libraries(raytracer PRIVATE ${LIBRARIES})
 else()
-  add_executable(raytracer)
+    add_executable(raytracer)
     target_sources(raytracer PRIVATE "src/tp1.cc" ${SRC})
     target_link_libraries(raytracer PRIVATE ${LIBRARIES})
 endif()
