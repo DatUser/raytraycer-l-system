@@ -10,6 +10,14 @@ Scene::Scene(Camera camera)
           camera(camera) {}
 
 // Angle in degree
+void rotateAroundZ(Vector3 &v, float angle) {
+    float rad_angle = angle * (M_PI / 180);
+    float tmp_x = v.x;
+    float tmp_y = v.y;
+    v.x = tmp_x * cos(rad_angle) + tmp_y * sin(rad_angle);
+    v.y = -tmp_x * sin(rad_angle) + tmp_y * cos(rad_angle);
+}
+
 void rotateAroundY(Vector3 &v, float angle) {
     float rad_angle = angle * (M_PI / 180);
     float tmp_x = v.x;

@@ -15,11 +15,15 @@ set(SRC "src/utils/point3.cc"
     "src/utils/image.cc"
     "src/utils/sphere.cc"
     "src/utils/scene.cc"
-        "src/utils/cylinder.cc"
+    "src/utils/cylinder.cc"
     "src/utils/uniform-texture.cc"
     "src/utils/camera.cc"
     "src/utils/triangle.cc"
-        "src/tp1.cc")
+    "src/utils/plane.cc"
+    "src/parser/parser.cc"
+    "src/parser/node-f.cc"
+    "src/parser/print-visitor.cc"
+    "src/tp1.cc")
 
 
 # SETUP
