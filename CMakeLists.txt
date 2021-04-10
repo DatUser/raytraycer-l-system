@@ -24,6 +24,7 @@ set(SRC "src/utils/point3.cc"
     "src/parser/node-f.cc"
     "src/parser/print-visitor.cc"
     "src/parser/node-start.cc"
+    "src/parser/node-rotate.cc"
     "src/tp1.cc")
 
 

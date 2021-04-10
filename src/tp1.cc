@@ -111,10 +111,11 @@ int main()
 {
     Parser parser("test");
 
-    std::string rule = "FFF";
+    //std::string rule = "F+F+F+F";
+    std::string rule = "[+F][-F]";
     Point3 origin = Point3(0,0,0);
-    Vector3 direction = Vector3(1,0,0);
-    Node* node = parser.build_rule(rule, origin, direction, 2);
+    Vector3 direction = Vector3(0,1,0);
+    Node* node = parser.build_rule(rule, origin, direction, 2, 90);
     PrintVisitor printVisitor;
 
     node->accept(printVisitor);
