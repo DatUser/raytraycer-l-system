@@ -13,6 +13,8 @@ public:
 
     Vector3(float x, float y, float z);
 
+    Vector3 operator-() const;
+
     Vector3 operator*(const float& l) const;
 
     Vector3 operator-(const float& l) const;
@@ -32,6 +34,8 @@ public:
     static Vector3 zero();
 
     Vector3 clamp(float min=0, float max=1);
+
+    double magnitudeSquared() const;
 
     float x;
     float y;
