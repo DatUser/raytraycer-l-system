@@ -11,6 +11,7 @@
 #include <utils/plane.hh>
 #include <parser/parser.hh>
 #include <parser/print-visitor.hh>
+#include <parser/generate-visitor.hh>
 
 int maintmp() {
     Image img(1920, 1080);
@@ -132,16 +133,56 @@ int maintmp() {
 
 int main()
 {
+    //SCENE CREATION
+    Image img(1920, 1080);
+
+    Point3 light_pos(3, 7, 0);
+    Light light(light_pos, 1, 1, 1);
+
+    Point3 center_cam(0, 0, 0);
+    Vector3 up = Vector3(0, 1, 0).get_normalized();
+    Point3 target(0, 0, 20);
+    Camera camera(center_cam, target, up, 90, 90 * ((float)img.height / (float) img.width), 10);
+
+    Point3 center_s3(5, -2005, 20);
+    //Color color2{0.1,0.71,0.1};
+    Color color3{0.8, 0.8, 0.8};
+    std::vector<Color> colors_t3;
+    colors_t3.push_back(color3);
+    Texture_Material *texture3 = new Uniform_Texture(colors_t3, 0.7, 0.1, 20);
+    Sphere s3(center_s3, 2000, texture3);
+
+    Scene scene(camera);
+
+
+    //LIGHT
+    scene.add_light(light);
+
+    //GROUND
+    scene.add_object(&s3);
+
+    //PARSING
     Parser parser("test");
 
-    //std::string rule = "F+F+F+F";
-    std::string rule = "[+F][-F]";
-    Point3 origin = Point3(0,0,0);
+    std::string sentence = "F-F-F-F";
+    std::string rule = "F-F+F+FF-F-F+F";
+    //std::string rule = "F[+F][-F][&F][^F]";
+    Point3 origin = Point3(0,0,15);
     Vector3 direction = Vector3(0,1,0);
-    Node* node = parser.build_rule(rule, origin, direction, 2, 90);
-    PrintVisitor printVisitor;
+    Node* rule_node = parser.build_rule(rule, origin, direction, 0.25, 90);
+    std::map<char, Node*> rules;
+    rules.insert({'F', rule_node});
+    Node* sentence_node = parser.build_rule(sentence, origin, direction, 0.25, 90);
+    PrintVisitor printVisitor(1, rules);
+    GenerateVisitor generateVisitor(&scene, 2, rules);
 
-    node->accept(printVisitor);
+    //sentence_node->accept(generateVisitor);
+    sentence_node->accept(generateVisitor);
+    //parser.parse(sentence, rules, printVisitor);
 
-    delete node;
+    delete rule_node;
+    delete sentence_node;
+
+    scene.capture_image(img);
+    img.save();
 }

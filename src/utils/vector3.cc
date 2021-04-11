@@ -10,6 +10,21 @@ Vector3::Vector3()
   z(0)
 {}
 
+Vector3::Vector3(const Vector3& obj)
+: x(obj.x),
+  y(obj.y),
+  z(obj.z)
+{
+}
+
+
+Vector3 &Vector3::operator=(const Vector3 &obj) {
+    x = obj.x;
+    y = obj.y;
+    z = obj.z;
+    return *this;
+}
+
 Vector3::Vector3(const Point3& a, const Point3& b)
 {
   x = b.x - a.x;

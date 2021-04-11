@@ -1,7 +1,8 @@
-#include "print-visitor.hh"
+#include "generate-visitor.hh"
 
-PrintVisitor::PrintVisitor(int depth, std::map<char, Node*>& rules)
-: depth(depth),
+GenerateVisitor::GenerateVisitor(Scene* scene, int depth, std::map<char, Node*>& rules)
+: scene(scene),
+  depth(depth),
   rules(rules),
   position(Point3(0,0,0)),
   direction(Vector3(0,1,0)),
@@ -9,8 +10,9 @@ PrintVisitor::PrintVisitor(int depth, std::map<char, Node*>& rules)
   alpha(90)
 {}
 
-PrintVisitor::PrintVisitor(const PrintVisitor& obj)
+GenerateVisitor::GenerateVisitor(const GenerateVisitor& obj)
 {
+    scene = obj.scene;
     depth = obj.depth;
     rules = obj.rules;
     position = obj.position;
@@ -19,8 +21,9 @@ PrintVisitor::PrintVisitor(const PrintVisitor& obj)
     alpha = obj.alpha;
 }
 
-PrintVisitor& PrintVisitor::operator=(const PrintVisitor& obj)
+GenerateVisitor& GenerateVisitor::operator=(const GenerateVisitor& obj)
 {
+    scene = obj.scene;
     depth = obj.depth;
     rules = obj.rules;
     position = obj.position;
@@ -31,33 +34,40 @@ PrintVisitor& PrintVisitor::operator=(const PrintVisitor& obj)
     return *this;
 }
 
-void PrintVisitor::visit(const Node& node)
+void GenerateVisitor::visit(const Node& node)
 {
     node.accept(*this);
 }
 
-void PrintVisitor::visit(const NodeF& node)
+void GenerateVisitor::build_branch(Point3& origin, Point3& dest) const
 {
-    if (depth == 0) {
-        //std::cout << position << " -> ";
+    Color color = Color(0,1,0);
+    std::vector<Color> colors = std::vector<Color>();
+    colors.push_back(color);
+    Texture_Material* texture = new Uniform_Texture(colors, 1, 1, 10);
+    Cylinder* cylinder = new Cylinder(origin, dest, 0.1, texture);
+    scene->add_object(cylinder);
+}
+
+void GenerateVisitor::visit(const NodeF& node) {
+    if (depth == 0){
+        Vector3 origin = position;
         position += (direction * t);
-        std::cout << position << std::endl;
-        //std::cout << 'F';
+        build_branch(origin, position);
     } else {
-        depth -= 1;
+        depth -=1;
         rules[node.get_rule()]->get_children()[0]->accept(*this);
         depth += 1;
     }
-    //std::cout << position << std::endl;
 
-    //PrintVisitor save = *this;
+    //GenerateVisitor save = *this;
     for (unsigned int i = 0; i < node.get_children().size(); i++) {
         node.get_children()[i]->accept(*this);
         //*this = save;
     }
 }
 
-void PrintVisitor::visit(const NodeStart& node)
+void GenerateVisitor::visit(const NodeStart& node)
 {
     std::cout << "Setting variables" << std::endl;
     position = node.get_origin();
@@ -71,28 +81,22 @@ void PrintVisitor::visit(const NodeStart& node)
 
 }
 
-void PrintVisitor::visit(const NodeRotate &node)
+void GenerateVisitor::visit(const NodeRotate &node)
 {
-
-    std::cout << "Rotating: " << direction << " -> ";
     switch (node.get_axis())
     {
         case 'X':
             rotateAroundX(direction, (node.get_positive()) ? alpha : -alpha);
-            //std::cout << ((node.get_positive()) ? '&' : '^');
             break;
         case 'Y':
             rotateAroundY(direction, (node.get_positive()) ? alpha : -alpha);
-            //std::cout << ((node.get_positive()) ? '\\' : '/');
             break;
         case 'Z':
             rotateAroundZ(direction, (node.get_positive()) ? alpha : -alpha);
-            //std::cout << ((node.get_positive()) ? '+' : '-');
             break;
     }
-    std::cout << direction << std::endl;
 
-    //PrintVisitor save = *this;
+    //GenerateVisitor save = *this;
     for (unsigned int i = 0; i < node.get_children().size(); i++) {
         node.get_children()[i]->accept(*this);
         //*this = save;

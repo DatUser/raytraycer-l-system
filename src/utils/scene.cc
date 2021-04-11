@@ -33,7 +33,7 @@ double my_sin(double angle)
         return 0;
     if (abs_val1 < 0.0000001)
         return (val > 0) ? 1 : -1;
-    return cos(angle);
+    return val;
 }
 
 // Angle in degree
@@ -175,7 +175,7 @@ void Scene::capture_image(Image &image) const {
     Vector3 translation = Vector3(camera.center.x, camera.center.y,
                                   camera.center.z);
 
-    std::ofstream os("projected.txt");
+    //std::ofstream os("projected.txt");
 
     for (unsigned int i = 0; i < image.height; i++) {
         for (unsigned int j = 0; j < image.width; j++) {
@@ -187,8 +187,8 @@ void Scene::capture_image(Image &image) const {
                 Vector3 projection = project_vector(Vector3(v_x, v_y, camera.z_pos),
                                                     camera.x, camera.y, camera.z, translation);
 
-                if (k == 0)
-                    os << projection;
+                /*if (k == 0)
+                    os << projection;*/
 
                 Color color_tmp = find_color(projection, /*z*/(projection - camera.center).get_normalized(), 0);
                 color_tmp.clamp();
@@ -197,10 +197,10 @@ void Scene::capture_image(Image &image) const {
             color = color * (0.2);
             image.put_pixel(i, j, color);
         }
-        os << std::endl;
+        //os << std::endl;
     }
 
-    os.close();
+    //os.close();
 }
 
 void Scene::add_object(Object *object) {

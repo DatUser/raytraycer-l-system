@@ -5,18 +5,20 @@
 #include "node-start.hh"
 #include "node-rotate.hh"
 #include "scene.hh"
+#include <utils/cylinder.hh>
+#include <utils/uniform-texture.hh>
 #include <utils/vector3.hh>
 
-class PrintVisitor : public Visitor
+class GenerateVisitor : public Visitor
 {
 public:
-    PrintVisitor(int depth, std::map<char, Node*>& rules);
+    GenerateVisitor(Scene* scene, int depth, std::map<char, Node*>& rules);
 
-    PrintVisitor(const PrintVisitor& obj);
+    GenerateVisitor(const GenerateVisitor& obj);
 
-    PrintVisitor& operator=(const PrintVisitor& obj);
+    GenerateVisitor& operator=(const GenerateVisitor& obj);
 
-    ~PrintVisitor() = default;
+    ~GenerateVisitor() = default;
 
     void visit(const Node& node) final;
     void visit(const NodeF& node) final;
@@ -24,6 +26,11 @@ public:
     void visit(const NodeRotate& node)  final;
 
 private:
+    void build_branch(Point3& origin, Point3& dest) const;
+
+    //Current scene
+    Scene* scene;
+
     //Depth for rules (>=0)
     int depth;
 

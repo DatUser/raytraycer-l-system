@@ -14,7 +14,7 @@ Node* Parser::build_rule(std::string& rule, Point3& origin, Vector3& direction, 
     {
         switch (rule[i]) {
             case 'F': {
-                Node* new_node = new NodeF();
+                Node* new_node = new NodeF('F');
                 curr->add_children(new_node);
                 curr = new_node;
                 break;
@@ -38,7 +38,7 @@ Node* Parser::build_rule(std::string& rule, Point3& origin, Vector3& direction, 
             case '\\':
             case '/':
             {
-                Node* new_node = new NodeRotate('X', rule[i] == '\\');
+                Node* new_node = new NodeRotate('Y', rule[i] == '\\');
                 curr->add_children(new_node);
                 curr = new_node;
                 break;
@@ -58,4 +58,10 @@ Node* Parser::build_rule(std::string& rule, Point3& origin, Vector3& direction, 
     }
 
     return root;
+}
+
+void Parser::parse(std::string sentence, std::map<char, Node*> &rules, Visitor& visitor) {
+    for (char c : sentence) {
+        rules[c]->accept(visitor);
+    }
 }
