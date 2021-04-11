@@ -6,9 +6,25 @@ class Visitor;
 class Node
 {
 public:
-    virtual void accept(const Visitor& visitor) const = 0;
+    virtual ~Node()
+    {
+        for (auto child : children)
+            delete child;
+    }
+
+    virtual void accept(Visitor& visitor) const = 0;
+
+    void add_children(Node* node)
+    {
+        children.push_back(node);
+    }
+
+    inline const std::vector<Node*> get_children() const
+    {
+        return children;
+    }
 
 protected:
-    std::vector<Node*> childrens;
+    std::vector<Node*> children;
 
 };

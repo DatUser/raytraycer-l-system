@@ -9,29 +9,56 @@ Scene::Scene(Camera camera)
           lights(std::vector<Light>()),
           camera(camera) {}
 
+//Angle in radian
+double my_cos(double angle)
+{
+    double val = cos(angle);
+    double abs_val = abs(val);
+    double abs_val1 = abs(1 - abs_val);
+
+    if (abs_val < 0.0000001)
+        return 0;
+    if (abs_val1 < 0.0000001)
+        return (val > 0) ? 1 : -1;
+    return val;
+}
+
+double my_sin(double angle)
+{
+    double val = sin(angle);
+    double abs_val = abs(val);
+    double abs_val1 = abs(1 - abs_val);
+
+    if (abs_val < 0.0000001)
+        return 0;
+    if (abs_val1 < 0.0000001)
+        return (val > 0) ? 1 : -1;
+    return cos(angle);
+}
+
 // Angle in degree
 void rotateAroundZ(Vector3 &v, float angle) {
-    float rad_angle = angle * (M_PI / 180);
+    double rad_angle = angle * (M_PI / 180);
     float tmp_x = v.x;
     float tmp_y = v.y;
-    v.x = tmp_x * cos(rad_angle) + tmp_y * sin(rad_angle);
-    v.y = -tmp_x * sin(rad_angle) + tmp_y * cos(rad_angle);
+    v.x = tmp_x * my_cos(rad_angle) + tmp_y * my_sin(rad_angle);
+    v.y = -tmp_x * my_sin(rad_angle) + tmp_y * my_cos(rad_angle);
 }
 
 void rotateAroundY(Vector3 &v, float angle) {
-    float rad_angle = angle * (M_PI / 180);
+    double rad_angle = angle * (M_PI / 180);
     float tmp_x = v.x;
     float tmp_z = v.z;
-    v.x = tmp_x * cos(rad_angle) + tmp_z * sin(rad_angle);
-    v.z = -tmp_x * sin(rad_angle) + tmp_z * cos(rad_angle);
+    v.x = tmp_x * my_cos(rad_angle) + tmp_z * my_sin(rad_angle);
+    v.z = -tmp_x * my_sin(rad_angle) + tmp_z * my_cos(rad_angle);
 }
 
 void rotateAroundX(Vector3 &v, float angle) {
     float rad_angle = angle * (M_PI / 180);
     float tmp_y = v.y;
     float tmp_z = v.z;
-    v.y = tmp_y * cos(rad_angle) - tmp_z * sin(rad_angle);
-    v.z = tmp_y * sin(rad_angle) + tmp_z * cos(rad_angle);
+    v.y = tmp_y * my_cos(rad_angle) - tmp_z * my_sin(rad_angle);
+    v.z = tmp_y * my_sin(rad_angle) + tmp_z * my_cos(rad_angle);
 }
 
 Vector3 Scene::project_vector(const Vector3 &v, const Vector3 &x_basis,

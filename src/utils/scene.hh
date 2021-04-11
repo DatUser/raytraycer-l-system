@@ -33,3 +33,9 @@ class Scene
     std::vector<Light> lights;
     Camera camera;
 };
+
+void rotateAroundZ(Vector3 &v, float angle);
+
+void rotateAroundY(Vector3 &v, float angle);
+
+void rotateAroundX(Vector3 &v, float angle);

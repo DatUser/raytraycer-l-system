@@ -4,6 +4,12 @@
 
 Vector3* Vector3::m_zero = nullptr;
 
+Vector3::Vector3()
+: x(0),
+  y(0),
+  z(0)
+{}
+
 Vector3::Vector3(const Point3& a, const Point3& b)
 {
   x = b.x - a.x;
