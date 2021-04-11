@@ -114,3 +114,5 @@ double Vector3::magnitudeSquared() const {
 Vector3 Vector3::operator-() const {
     return Vector3(-x, -y, -z);
 }
+
+Vector3::Vector3() {}
