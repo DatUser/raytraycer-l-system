@@ -60,10 +60,11 @@ void GenerateVisitor::visit(const NodeF& node) {
         depth += 1;
     }
 
-    //GenerateVisitor save = *this;
+    GenerateVisitor save = *this;
     for (unsigned int i = 0; i < node.get_children().size(); i++) {
         node.get_children()[i]->accept(*this);
-        //*this = save;
+        if (i != node.get_children().size() - 1)
+            *this = save;
     }
 }
 
@@ -96,9 +97,10 @@ void GenerateVisitor::visit(const NodeRotate &node)
             break;
     }
 
-    //GenerateVisitor save = *this;
+    GenerateVisitor save = *this;
     for (unsigned int i = 0; i < node.get_children().size(); i++) {
         node.get_children()[i]->accept(*this);
-        //*this = save;
+        if (i != node.get_children().size() - 1)
+            *this = save;
     }
 }

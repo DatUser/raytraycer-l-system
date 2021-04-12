@@ -54,6 +54,8 @@ Node* Parser::build_rule(std::string& rule, Point3& origin, Vector3& direction, 
                 stack.pop_front();
                 break;
             }
+            default:
+
         }
     }
 

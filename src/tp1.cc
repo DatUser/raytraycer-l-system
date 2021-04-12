@@ -173,16 +173,18 @@ int main()
     std::map<char, Node*> rules;
     rules.insert({'F', rule_node});
     Node* sentence_node = parser.build_rule(sentence, origin, direction, 0.25, 90);
-    PrintVisitor printVisitor(1, rules);
-    GenerateVisitor generateVisitor(&scene, 2, rules);
+    //PrintVisitor printVisitor(1, rules);
+    GenerateVisitor generateVisitor(&scene, 3, rules);
 
     //sentence_node->accept(generateVisitor);
     sentence_node->accept(generateVisitor);
+    //rule_node->accept(generateVisitor);
     //parser.parse(sentence, rules, printVisitor);
 
     delete rule_node;
     delete sentence_node;
 
+    std::cout << "Tree is built" << std::endl;
     scene.capture_image(img);
     img.save();
 }
