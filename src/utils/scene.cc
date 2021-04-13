@@ -177,30 +177,62 @@ void Scene::capture_image(Image &image) const {
 
     //std::ofstream os("projected.txt");
 
+
     for (unsigned int i = 0; i < image.height; i++) {
         for (unsigned int j = 0; j < image.width; j++) {
             Color color = Color(0,0,0);
+            float v_y = (image.height - i - 0.5) * height / image.height - down_shift;
+            float v_x = (image.width - j - 0.5) * width / image.width - left_shift;
+
+            Vector3 projection = project_vector(Vector3(v_x, v_y, camera.z_pos), camera.x, camera.y, camera.z, translation);
+
+            Color color_tmp = find_color(projection, (projection - camera.center).get_normalized(), 0);
+            color_tmp.clamp();
+            color += color_tmp;
+            image.put_pixel(i, j, color);
+        }
+    }
+
+
+    for (unsigned int i = 1; i < image.height - 1; i++) {
+        for (unsigned int j = 1; j < image.width - 1; j++) {
+            Color color = image.get_pixel(i, j);
             //multiple ray per pixel (anti-aliasing)
+            if (image.gradient(i, j, 0)) {
+                continue;
+            }
             for (unsigned int k = 0; k < ALIASING_RAY; k++) {
                 float v_y = (image.height - i - 0.5) * height / image.height - down_shift;
+//                float v_x = (image.width - j - 0.5) * width / (image.width) - left_shift;
                 float v_x = (image.width * ALIASING_RAY - (j * ALIASING_RAY + k) - 0.5) * width / (image.width * ALIASING_RAY) - left_shift;
                 Vector3 projection = project_vector(Vector3(v_x, v_y, camera.z_pos),
                                                     camera.x, camera.y, camera.z, translation);
 
-                /*if (k == 0)
-                    os << projection;*/
-
-                Color color_tmp = find_color(projection, /*z*/(projection - camera.center).get_normalized(), 0);
+                Color color_tmp = find_color(projection, (projection - camera.center).get_normalized(), 0);
                 color_tmp.clamp();
                 color += color_tmp;
             }
+
+            color = image.get_pixel(i, j);
+            for (unsigned int k = 0; k < ALIASING_RAY; k++) {
+//                float v_y = (image.height - i - 0.5) * height / image.height - down_shift;
+                float v_y = (image.height * ALIASING_RAY - (i * ALIASING_RAY + k) - 0.5) * height / (image.height * ALIASING_RAY) - down_shift;
+                float v_x = (image.width - j - 0.5) * width / image.width - left_shift;
+
+                Vector3 projection = project_vector(Vector3(v_x, v_y, camera.z_pos),
+                                                    camera.x, camera.y, camera.z, translation);
+
+                Color color_tmp = find_color(projection, (projection - camera.center).get_normalized(), 0);
+                color_tmp.clamp();
+                color += color_tmp;
+            }
+
+
             color = color * (0.2);
+            color.clamp();
             image.put_pixel(i, j, color);
         }
-        //os << std::endl;
     }
-
-    //os.close();
 }
 
 void Scene::add_object(Object *object) {

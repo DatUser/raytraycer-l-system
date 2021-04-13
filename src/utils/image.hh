@@ -16,6 +16,10 @@ class Image
 
     void put_pixel(unsigned int x, unsigned int y, Color& color);
 
+    Color get_pixel(unsigned int x, unsigned int y);
+
+    bool gradient(unsigned x, unsigned y, float gradient);
+
     void save_file();
 
   //private:

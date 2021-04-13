@@ -25,11 +25,15 @@ public:
 
     Vector3 operator-(const float& l) const;
 
+    Vector3 operator/(const float& l) const;
+
     Vector3 operator-(const Vector3& v) const;
 
     Vector3 operator+(const Vector3& v) const;
 
     Vector3 operator*(const Vector3& v) const;
+
+    bool operator==(const Vector3& v) const;
 
     void operator+=(const Vector3& v);
 

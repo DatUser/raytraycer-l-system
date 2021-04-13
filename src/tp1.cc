@@ -8,12 +8,11 @@
 #include <utils/camera.hh>
 #include <utils/scene.hh>
 #include <utils/triangle.hh>
-#include <utils/plane.hh>
 #include <parser/parser.hh>
 #include <parser/print-visitor.hh>
 #include <parser/generate-visitor.hh>
 
-int maintmp() {
+int main1() {
     Image img(1920, 1080);
     Point3 center_s1(-5, 0, 20);
     //Color color{0.71,0.1,0.1};
@@ -185,4 +184,5 @@ int main()
 
     scene.capture_image(img);
     img.save();
+    return 0;
 }
