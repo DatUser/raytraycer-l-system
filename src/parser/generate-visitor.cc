@@ -1,17 +1,22 @@
 #include "generate-visitor.hh"
 
-GenerateVisitor::GenerateVisitor(Scene* scene, int depth, std::map<char, Node*>& rules)
-: scene(scene),
+GenerateVisitor::GenerateVisitor(Scene* scene, int depth, std::map<char, Node*>& rules,
+                                 float diameter_reduction)
+: is_set(false),
+  scene(scene),
   depth(depth),
   rules(rules),
   position(Point3(0,0,0)),
   direction(Vector3(0,1,0)),
   t(1),
-  alpha(90)
+  alpha(90),
+  diameter(0.2),
+  diameter_reduction(diameter_reduction)
 {}
 
 GenerateVisitor::GenerateVisitor(const GenerateVisitor& obj)
 {
+    is_set = obj.is_set;
     scene = obj.scene;
     depth = obj.depth;
     rules = obj.rules;
@@ -19,10 +24,13 @@ GenerateVisitor::GenerateVisitor(const GenerateVisitor& obj)
     direction = obj.direction;
     t = obj.t;
     alpha = obj.alpha;
+    diameter = obj.diameter;
+    diameter_reduction = obj.diameter_reduction;
 }
 
 GenerateVisitor& GenerateVisitor::operator=(const GenerateVisitor& obj)
 {
+    is_set = obj.is_set;
     scene = obj.scene;
     depth = obj.depth;
     rules = obj.rules;
@@ -30,6 +38,8 @@ GenerateVisitor& GenerateVisitor::operator=(const GenerateVisitor& obj)
     direction = obj.direction;
     t = obj.t;
     alpha = obj.alpha;
+    diameter = obj.diameter;
+    diameter_reduction = obj.diameter_reduction;
 
     return *this;
 }
@@ -41,11 +51,11 @@ void GenerateVisitor::visit(const Node& node)
 
 void GenerateVisitor::build_branch(Point3& origin, Point3& dest) const
 {
-    Color color = Color(0,1,0);
+    Color color = Color(0.5,0.3,0.1);
     std::vector<Color> colors = std::vector<Color>();
     colors.push_back(color);
-    Texture_Material* texture = new Uniform_Texture(colors, 1, 1, 10);
-    Cylinder* cylinder = new Cylinder(origin, dest, 0.1, texture);
+    Texture_Material* texture = new Uniform_Texture(colors, 0.7, 0, 0);
+    Cylinder* cylinder = new Cylinder(origin, dest, diameter, texture);
     scene->add_object(cylinder);
 }
 
@@ -56,7 +66,7 @@ void GenerateVisitor::visit(const NodeF& node) {
         build_branch(origin, position);
     } else {
         depth -=1;
-        rules[node.get_rule()]->get_children()[0]->accept(*this);
+        rules[node.get_rule()]/*->get_children()[0]*/->accept(*this);
         depth += 1;
     }
 
@@ -70,14 +80,21 @@ void GenerateVisitor::visit(const NodeF& node) {
 
 void GenerateVisitor::visit(const NodeStart& node)
 {
-    std::cout << "Setting variables" << std::endl;
-    position = node.get_origin();
-    direction = node.get_direction();
-    t = node.get_distance();
-    alpha = node.get_angle();
-    //This should have a single child so there's no need to make a save
+    if (!is_set) {
+        std::cout << "Setting variables" << std::endl;
+        is_set = true;
+        position = node.get_origin();
+        direction = node.get_direction();
+        t = node.get_distance();
+        alpha = node.get_angle();
+        diameter = node.get_diameter();
+    }
+
+    GenerateVisitor save = *this;
     for (unsigned int i = 0; i < node.get_children().size(); i++) {
         node.get_children()[i]->accept(*this);
+        if (i != node.get_children().size() - 1)
+            *this = save;
     }
 
 }
@@ -103,4 +120,35 @@ void GenerateVisitor::visit(const NodeRotate &node)
         if (i != node.get_children().size() - 1)
             *this = save;
     }
+}
+
+void GenerateVisitor::visit(const NodeRule &node) {
+    if (depth != 0){
+        depth -=1;
+        rules[node.get_rule()]/*->get_children()[0]*/->accept(*this);
+        depth += 1;
+    }
+
+    GenerateVisitor save = *this;
+    for (unsigned int i = 0; i < node.get_children().size(); i++) {
+        node.get_children()[i]->accept(*this);
+        if (i != node.get_children().size() - 1)
+            *this = save;
+    }
+
+}
+
+void GenerateVisitor::visit(const NodeDiameter &node) {
+    reduce_diameter();
+
+    GenerateVisitor save = *this;
+    for (unsigned int i = 0; i < node.get_children().size(); i++) {
+        node.get_children()[i]->accept(*this);
+        if (i != node.get_children().size() - 1)
+            *this = save;
+    }
+}
+
+void GenerateVisitor::reduce_diameter() {
+    diameter *= diameter_reduction;
 }

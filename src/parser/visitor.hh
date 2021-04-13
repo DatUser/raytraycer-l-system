@@ -8,6 +8,8 @@ class Node;
 class NodeF;
 class NodeStart;
 class NodeRotate;
+class NodeRule;
+class NodeDiameter;
 
 class Visitor
 {
@@ -16,4 +18,6 @@ public:
     virtual void visit(const NodeF& node)  = 0;
     virtual void visit(const NodeStart& node)  = 0;
     virtual void visit(const NodeRotate& node)  = 0;
+    virtual void visit(const NodeRule& node)  = 0;
+    virtual void visit(const NodeDiameter& node)  = 0;
 };

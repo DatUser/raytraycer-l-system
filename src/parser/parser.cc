@@ -4,9 +4,9 @@ Parser::Parser(std::string file)
 : file(file)
 {}
 
-Node* Parser::build_rule(std::string& rule, Point3& origin, Vector3& direction, float distance, float angle)
+Node* Parser::build_rule(std::string& rule, Point3& origin, Vector3& direction, float distance, float angle, float diameter)
 {
-    Node* root = new NodeStart(origin, direction, distance, angle);
+    Node* root = new NodeStart(origin, direction, distance, angle, diameter);
     Node* curr = root;
     std::list<Node*> stack = std::list<Node*>();
 
@@ -54,7 +54,20 @@ Node* Parser::build_rule(std::string& rule, Point3& origin, Vector3& direction, 
                 stack.pop_front();
                 break;
             }
+            case '!':
+            {
+                Node* new_node = new NodeDiameter(0.75);
+                curr->add_children(new_node);
+                curr = new_node;
+                break;
+            }
             default:
+            {
+                Node* new_node = new NodeRule(rule[i]);
+                curr->add_children(new_node);
+                curr = new_node;
+                break;
+            }
 
         }
     }

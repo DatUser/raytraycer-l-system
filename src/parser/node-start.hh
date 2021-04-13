@@ -8,7 +8,7 @@
 //and will contain information tree generation
 class NodeStart : public Node {
 public:
-    NodeStart(Point3& origin, Vector3& direction, float distance, float angle);
+    NodeStart(Point3& origin, Vector3& direction, float distance, float angle, float diameter);
 
     void accept(Visitor& visitor) const final;
 
@@ -32,9 +32,15 @@ public:
         return angle;
     }
 
+    inline float get_diameter() const
+    {
+        return diameter;
+    }
+
 private:
     Point3 origin;
     Vector3 direction;
     float distance;
     float angle;
+    float diameter;
 };

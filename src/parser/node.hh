@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include "visitor.hh"
 class Visitor;
 
 class Node
@@ -26,5 +27,4 @@ public:
 
 protected:
     std::vector<Node*> children;
-
 };

@@ -1,7 +1,8 @@
 #include "print-visitor.hh"
 
 PrintVisitor::PrintVisitor(int depth, std::map<char, Node*>& rules)
-: depth(depth),
+: is_set(false),
+  depth(depth),
   rules(rules),
   position(Point3(0,0,0)),
   direction(Vector3(0,1,0)),
@@ -11,6 +12,7 @@ PrintVisitor::PrintVisitor(int depth, std::map<char, Node*>& rules)
 
 PrintVisitor::PrintVisitor(const PrintVisitor& obj)
 {
+    is_set = obj.is_set;
     depth = obj.depth;
     rules = obj.rules;
     position = obj.position;
@@ -21,6 +23,7 @@ PrintVisitor::PrintVisitor(const PrintVisitor& obj)
 
 PrintVisitor& PrintVisitor::operator=(const PrintVisitor& obj)
 {
+    is_set = obj.is_set;
     depth = obj.depth;
     rules = obj.rules;
     position = obj.position;
@@ -41,32 +44,39 @@ void PrintVisitor::visit(const NodeF& node)
     if (depth == 0) {
         //std::cout << position << " -> ";
         position += (direction * t);
-        std::cout << position << std::endl;
+        std::cout << "F: " << position << std::endl;
         //std::cout << 'F';
     } else {
         depth -= 1;
-        rules[node.get_rule()]->get_children()[0]->accept(*this);
+        rules[node.get_rule()]/*->get_children()[0]*/->accept(*this);
         depth += 1;
     }
     //std::cout << position << std::endl;
 
-    //PrintVisitor save = *this;
+    PrintVisitor save = *this;
     for (unsigned int i = 0; i < node.get_children().size(); i++) {
         node.get_children()[i]->accept(*this);
-        //*this = save;
+        if (i != node.get_children().size() - 1)
+            *this = save;
     }
 }
 
 void PrintVisitor::visit(const NodeStart& node)
 {
-    std::cout << "Setting variables" << std::endl;
-    position = node.get_origin();
-    direction = node.get_direction();
-    t = node.get_distance();
-    alpha = node.get_angle();
-    //This should have a single child so there's no need to make a save
+    if (!is_set) {
+        std::cout << "Setting variables" << std::endl;
+        is_set = true;
+        position = node.get_origin();
+        direction = node.get_direction();
+        t = node.get_distance();
+        alpha = node.get_angle();
+    }
+
+    PrintVisitor save = *this;
     for (unsigned int i = 0; i < node.get_children().size(); i++) {
         node.get_children()[i]->accept(*this);
+        if (i != node.get_children().size() - 1)
+            *this = save;
     }
 
 }
@@ -92,9 +102,36 @@ void PrintVisitor::visit(const NodeRotate &node)
     }
     std::cout << direction << std::endl;
 
-    //PrintVisitor save = *this;
+    PrintVisitor save = *this;
     for (unsigned int i = 0; i < node.get_children().size(); i++) {
         node.get_children()[i]->accept(*this);
-        //*this = save;
+        if (i != node.get_children().size() - 1)
+            *this = save;
+    }
+}
+
+void PrintVisitor::visit(const NodeRule &node) {
+    if (depth != 0){
+        depth -=1;
+        rules[node.get_rule()]/*->get_children()[0]*/->accept(*this);
+        depth += 1;
+    }
+
+    PrintVisitor save = *this;
+    for (unsigned int i = 0; i < node.get_children().size(); i++) {
+        node.get_children()[i]->accept(*this);
+        if (i != node.get_children().size() - 1)
+            *this = save;
+    }
+}
+
+void PrintVisitor::visit(const NodeDiameter &node) {
+    //(void) node;
+    //FIXME
+    PrintVisitor save = *this;
+    for (unsigned int i = 0; i < node.get_children().size(); i++) {
+        node.get_children()[i]->accept(*this);
+        if (i != node.get_children().size() - 1)
+            *this = save;
     }
 }

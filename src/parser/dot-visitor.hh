@@ -9,16 +9,16 @@
 #include "scene.hh"
 #include <utils/vector3.hh>
 
-class PrintVisitor : public Visitor
+class DotVisitor : public Visitor
 {
 public:
-    PrintVisitor(int depth, std::map<char, Node*>& rules);
+    DotVisitor();
 
-    PrintVisitor(const PrintVisitor& obj);
+    DotVisitor(const DotVisitor& obj);
 
-    PrintVisitor& operator=(const PrintVisitor& obj);
+    DotVisitor& operator=(const DotVisitor& obj);
 
-    ~PrintVisitor() = default;
+    ~DotVisitor() = default;
 
     void visit(const Node& node) final;
     void visit(const NodeF& node) final;
@@ -28,19 +28,9 @@ public:
     void visit(const NodeDiameter& node)  final;
 
 private:
-    //To avoid multiple node-start
-    bool is_set;
+    bool writing_label;
 
-    //Depth for rules (>=0)
-    int depth;
+    //Stores node's id
+    int id;
 
-    //Set of rules
-    std::map<char, Node*> rules;
-
-    Point3 position;
-    Vector3 direction;
-    //distance
-    float t;
-    //angle in degree
-    float alpha;
 };

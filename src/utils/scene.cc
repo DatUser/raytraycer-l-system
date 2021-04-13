@@ -78,7 +78,7 @@ Vector3 Scene::project_vector(const Vector3 &v, const Vector3 &x_basis,
 }
 
 Color Scene::find_color(const Point3 &origin, const Vector3 &forward, int depth, const Object* source) const {
-    if (depth >= 3)
+    if (depth >= MAX_DEPTH)
         return Color(0, 0, 0);
 
     float closest = std::numeric_limits<float>::max();
@@ -127,7 +127,7 @@ Color Scene::compute_light(const Point3 &origin, const Point3 &hitpoint, const O
     /*if (depth >= 2)
         return Color(0, 0, 0);*/
     Color color = ambient;//{0, 0, 0};
-    (void) origin;
+    //(void) origin;
     Vector3 incoming = Vector3(origin, hitpoint).get_normalized();
 
     for (unsigned int i = 0; i < lights.size(); i++) {

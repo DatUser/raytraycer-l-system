@@ -1,6 +1,6 @@
 #pragma once
 
-#define MAX_DEPTH 3
+#define MAX_DEPTH 1
 
 #include <vector>
 #include <limits>

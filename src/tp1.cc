@@ -164,26 +164,45 @@ int main()
     //PARSING
     Parser parser("test");
 
-    std::string sentence = "F-F-F-F";
-    std::string rule = "F-F+F+FF-F-F+F";
+    //SETTING GRAMMAR RULES
+    /*std::string sentence = "F-F-F-F";
+    std::string rule = "F-F+F+FF-F-F+F";*/
     //std::string rule = "F[+F][-F][&F][^F]";
-    Point3 origin = Point3(0,0,15);
-    Vector3 direction = Vector3(0,1,0);
-    Node* rule_node = parser.build_rule(rule, origin, direction, 0.25, 90);
-    std::map<char, Node*> rules;
-    rules.insert({'F', rule_node});
-    Node* sentence_node = parser.build_rule(sentence, origin, direction, 0.25, 90);
-    //PrintVisitor printVisitor(1, rules);
-    GenerateVisitor generateVisitor(&scene, 3, rules);
+    std::string sentence = "SA";
+    std::string rule_a = "[&F!A]/////[&F!A]///////[&F!A]";
+    std::string rule_f = "S/////F";
+    std::string rule_s = "F";
 
-    //sentence_node->accept(generateVisitor);
+    //BUILDING RULE'S TREE
+    std::map<char, Node*> rules;
+
+    Point3 origin = Point3(0,-5,15);
+    Vector3 direction = Vector3(0,1,1).get_normalized();
+    Node* rule_node_a = parser.build_rule(rule_a, origin, direction, 1, 90, 0.2);
+    rules.insert({'A', rule_node_a});
+
+    Node* rule_node_f = parser.build_rule(rule_f, origin, direction, 1, 90, 0.2);
+    rules.insert({'F', rule_node_f});
+
+    Node* rule_node_s = parser.build_rule(rule_s, origin, direction, 1, 90, 0.2);
+    rules.insert({'S', rule_node_s});
+
+    Node* sentence_node = parser.build_rule(sentence, origin, direction, 2, 22.5, 0.2);
+    PrintVisitor printVisitor(1, rules);
+    GenerateVisitor generateVisitor(&scene, 3, rules, 0.75);
+
+    //VISITING TREE
     sentence_node->accept(generateVisitor);
+    //sentence_node->accept(printVisitor);
     //rule_node->accept(generateVisitor);
     //parser.parse(sentence, rules, printVisitor);
 
-    delete rule_node;
+    delete rule_node_a;
+    delete rule_node_f;
+    delete rule_node_s;
     delete sentence_node;
 
+    //RENDENRING SCENE
     std::cout << "Tree is built" << std::endl;
     scene.capture_image(img);
     img.save();
