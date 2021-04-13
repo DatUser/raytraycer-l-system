@@ -71,6 +71,8 @@ void GenerateVisitor::visit(const NodeF& node) {
     }
 
     GenerateVisitor save = *this;
+    /*if (depth == 0)
+        t = t * 0.75;*/
     for (unsigned int i = 0; i < node.get_children().size(); i++) {
         node.get_children()[i]->accept(*this);
         if (i != node.get_children().size() - 1)

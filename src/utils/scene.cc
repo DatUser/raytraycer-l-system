@@ -5,7 +5,7 @@
 #include "omp.h"
 
 const unsigned int ALIASING_RAY = 5;
-const Color ambient{0.05,0.05,0.05};
+const Color ambient{0.05, 0.05, 0.05};
 
 Scene::Scene(Camera camera)
         : objects(std::vector<Object *>()),
@@ -13,8 +13,7 @@ Scene::Scene(Camera camera)
           camera(camera) {}
 
 //Angle in radian
-double my_cos(double angle)
-{
+double my_cos(double angle) {
     double val = cos(angle);
     double abs_val = abs(val);
     double abs_val1 = abs(1 - abs_val);
@@ -26,8 +25,7 @@ double my_cos(double angle)
     return val;
 }
 
-double my_sin(double angle)
-{
+double my_sin(double angle) {
     double val = sin(angle);
     double abs_val = abs(val);
     double abs_val1 = abs(1 - abs_val);
@@ -74,10 +72,10 @@ Vector3 Scene::project_vector(const Vector3 &v, const Vector3 &x_basis,
     float z_world = v.x * x_basis.z + v.y * y_basis.z + v.z * z_basis.z
                     + translation.z;
 
-    return Vector3(x_world /*- camera.center.x*/, y_world /*- camera.center.y*/,z_world /*- camera.center.z*/);
+    return Vector3(x_world /*- camera.center.x*/, y_world /*- camera.center.y*/, z_world /*- camera.center.z*/);
 }
 
-Color Scene::find_color(const Point3 &origin, const Vector3 &forward, int depth, const Object* source) const {
+Color Scene::find_color(const Point3 &origin, const Vector3 &forward, int depth, const Object *source) const {
     if (depth >= MAX_DEPTH)
         return Color(0, 0, 0);
 
@@ -103,18 +101,15 @@ Color Scene::find_color(const Point3 &origin, const Vector3 &forward, int depth,
     return color;
 }
 
-bool Scene::intersect(const Point3& origin, const Vector3& direction, const Object* source) const
-{
+bool Scene::intersect(const Point3 &origin, const Vector3 &direction, const Object *source) const {
     std::optional<Vector3> intersection;
-    Object* closest_obj = NULL;
+    Object *closest_obj = NULL;
     float closest = std::numeric_limits<float>().max();
-    float p_norm =0;
-    for (unsigned int i = 0; i < objects.size(); i++)
-    {
+    float p_norm = 0;
+    for (unsigned int i = 0; i < objects.size(); i++) {
         Object *obj = objects[i];
         if ((intersection = obj->intersect(origin, direction)).has_value() &&
-            (p_norm = norm(camera.center, intersection.value())) < closest)
-        {
+            (p_norm = norm(camera.center, intersection.value())) < closest) {
             closest = p_norm;
             closest_obj = obj;
         }
@@ -154,8 +149,7 @@ Color Scene::compute_light(const Point3 &origin, const Point3 &hitpoint, const O
 
         float d2 = dotProd(s, light_v);
 
-        if (d2 > 0)
-        {
+        if (d2 > 0) {
             Color spec = light.get_color() * info.ks * std::pow(d2, info.ns);
             color += spec;
         }
@@ -179,8 +173,10 @@ void Scene::capture_image(Image &image) const {
                                   camera.center.z);
 
     //std::ofstream os("projected.txt");
+
+
     unsigned int h = image.height / 12;
-    for ( int nThreads = 1; nThreads <= 12; nThreads++ ) {
+    for (int nThreads = 1; nThreads <= 12; nThreads++) {
         //clock_t start = clock();
         //omp_set_dynamic(1);
         omp_set_num_threads(nThreads);
@@ -188,32 +184,76 @@ void Scene::capture_image(Image &image) const {
         for (unsigned int i = h * (nThreads - 1); i < nThreads * h/*image.height*/ ; i++) {
             for (unsigned int j = 0; j < image.width; j++) {
                 Color color = Color(0, 0, 0);
+                float v_y = (image.height - i - 0.5) * height / image.height - down_shift;
+                float v_x = (image.width - j - 0.5) * width / image.width - left_shift;
+
+                Vector3 projection = project_vector(Vector3(v_x, v_y, camera.z_pos), camera.x, camera.y, camera.z,
+                                                    translation);
+
+                Color color_tmp = find_color(projection, (projection - camera.center).get_normalized(), 0);
+                color_tmp.clamp();
+                color += color_tmp;
+                image.put_pixel(i, j, color);
+            }
+        }
+
+        std::cout << "Pass1 - Threads: " << nThreads
+                  << /*"\nTime: " << (double)( end - start ) / CLOCKS_PER_SEC << */"\n";
+    }
+
+
+    for (int nThreads = 1; nThreads <= 12; nThreads++) {
+        //clock_t start = clock();
+        //omp_set_dynamic(1);
+        omp_set_num_threads(nThreads);
+        #pragma omp parallel  for schedule(static, 12)
+        for (unsigned int i = h * (nThreads - 1); i < nThreads * h/*image.height*/ ; i++) {
+            if (i == 0 || i == image.height - 1)
+                continue;
+            for (unsigned int j = 1; j < image.width - 1; j++) {
+
+                Color color = image.get_pixel(i, j);
                 //multiple ray per pixel (anti-aliasing)
+                if (image.gradient(i, j, 0)) {
+                    continue;
+                }
                 for (unsigned int k = 0; k < ALIASING_RAY; k++) {
                     float v_y = (image.height - i - 0.5) * height / image.height - down_shift;
+//                float v_x = (image.width - j - 0.5) * width / (image.width) - left_shift;
                     float v_x = (image.width * ALIASING_RAY - (j * ALIASING_RAY + k) - 0.5) * width /
                                 (image.width * ALIASING_RAY) - left_shift;
                     Vector3 projection = project_vector(Vector3(v_x, v_y, camera.z_pos),
                                                         camera.x, camera.y, camera.z, translation);
 
-                    /*if (k == 0)
-                        os << projection;*/
-
-                    Color color_tmp = find_color(projection, /*z*/(projection - camera.center).get_normalized(), 0);
+                    Color color_tmp = find_color(projection, (projection - camera.center).get_normalized(), 0);
                     color_tmp.clamp();
                     color += color_tmp;
                 }
+
+                color = image.get_pixel(i, j);
+                for (unsigned int k = 0; k < ALIASING_RAY; k++) {
+//                float v_y = (image.height - i - 0.5) * height / image.height - down_shift;
+                    float v_y = (image.height * ALIASING_RAY - (i * ALIASING_RAY + k) - 0.5) * height /
+                                (image.height * ALIASING_RAY) - down_shift;
+                    float v_x = (image.width - j - 0.5) * width / image.width - left_shift;
+
+                    Vector3 projection = project_vector(Vector3(v_x, v_y, camera.z_pos),
+                                                        camera.x, camera.y, camera.z, translation);
+
+                    Color color_tmp = find_color(projection, (projection - camera.center).get_normalized(), 0);
+                    color_tmp.clamp();
+                    color += color_tmp;
+                }
+
+
                 color = color * (0.2);
+                color.clamp();
                 image.put_pixel(i, j, color);
             }
-            //os << std::endl;
         }
-        //clock_t end = clock();
 
-        std::cout << "Threads: " << nThreads << /*"\nTime: " << (double)( end - start ) / CLOCKS_PER_SEC << */"\n";
+        std::cout << "Pass1 - Threads: " << nThreads << "\n";
     }
-
-    //os.close();
 }
 
 void Scene::add_object(Object *object) {

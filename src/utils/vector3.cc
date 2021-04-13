@@ -50,6 +50,11 @@ Vector3 Vector3::operator-(const float& l) const
   return Vector3(x - l, y - l, z - l);
 }
 
+Vector3 Vector3::operator/(const float& l) const
+{
+    return Vector3(x / l, y / l, z / l);
+}
+
 Vector3 Vector3::operator-(const Vector3& v) const
 {
   return Vector3(x - v.x, y - v.y, z - v.z);
@@ -63,6 +68,14 @@ Vector3 Vector3::operator+(const Vector3& v) const
 Vector3 Vector3::operator*(const Vector3& v) const
 {
     return Vector3(x * v.x, y * v.y, z * v.z);
+}
+
+bool Vector3::operator==(const Vector3& v) const
+{
+    float X = abs(x - v.x);
+    float Y = abs(y - v.y);
+    float Z = abs(z - v.z);
+    return X < 0.18 && Y < 0.18 && Z < 0.18;
 }
 
 void Vector3::operator+=(const Vector3& v)

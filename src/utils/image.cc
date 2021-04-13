@@ -54,3 +54,37 @@ void Image::save_file() {
 
     file.close();
 }
+
+Color Image::get_pixel(unsigned int x, unsigned int y) {
+    float R, G, B;
+    R = pixels[(x * width + y) * 3];
+    G = pixels[(x * width + y) * 3 + 1];
+    B = pixels[(x * width + y) * 3 + 2];
+    return Color(R / 255, G / 255, B / 255);
+}
+
+bool Image::gradient(unsigned int x, unsigned int y, float gradient) {
+    (void) gradient;
+    // -------------
+    // | a | b | c |
+    // -------------
+    // | d | e | f |
+    // -------------
+    // | g | h | i |
+    // -------------
+
+    auto a = get_pixel(x - 1 , y - 1);
+    auto b = get_pixel(x, y - 1);
+    auto c = get_pixel(x + 1, y - 1);
+
+    auto d = get_pixel(x - 1, y);
+    auto e = get_pixel(x, y);
+    auto f = get_pixel(x + 1, y);
+
+    auto g = get_pixel(x - 1, y + 1);
+    auto h = get_pixel(x, y + 1);
+    auto i = get_pixel(x + 1, y + 1);
+
+
+    return a == b && a == c && a == d && a == e && a == f && a == g && a == h && a == i;
+}

@@ -8,12 +8,11 @@
 #include <utils/camera.hh>
 #include <utils/scene.hh>
 #include <utils/triangle.hh>
-#include <utils/plane.hh>
 #include <parser/parser.hh>
 #include <parser/print-visitor.hh>
 #include <parser/generate-visitor.hh>
 
-int maintmp() {
+int main1() {
     Image img(1920, 1080);
     Point3 center_s1(-5, 0, 20);
     //Color color{0.71,0.1,0.1};
@@ -168,7 +167,7 @@ int main()
     /*std::string sentence = "F-F-F-F";
     std::string rule = "F-F+F+FF-F-F+F";*/
     //std::string rule = "F[+F][-F][&F][^F]";
-    std::string sentence = "SA";
+    std::string sentence = "A";
     std::string rule_a = "[&F!A]/////[&F!A]///////[&F!A]";
     std::string rule_f = "S/////F";
     std::string rule_s = "F";
@@ -187,9 +186,9 @@ int main()
     Node* rule_node_s = parser.build_rule(rule_s, origin, direction, 1, 90, 0.2);
     rules.insert({'S', rule_node_s});
 
-    Node* sentence_node = parser.build_rule(sentence, origin, direction, 2, 22.5, 0.2);
+    Node* sentence_node = parser.build_rule(sentence, origin, direction, 5, 22.5, 0.15);
     PrintVisitor printVisitor(1, rules);
-    GenerateVisitor generateVisitor(&scene, 3, rules, 0.75);
+    GenerateVisitor generateVisitor(&scene, 5, rules, 0.75);
 
     //VISITING TREE
     sentence_node->accept(generateVisitor);
@@ -206,4 +205,5 @@ int main()
     std::cout << "Tree is built" << std::endl;
     scene.capture_image(img);
     img.save();
+    return 0;
 }
