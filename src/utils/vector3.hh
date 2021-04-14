@@ -35,6 +35,8 @@ public:
 
     bool operator==(const Vector3& v) const;
 
+    bool operator<(const Vector3& v) const;
+
     void operator+=(const Vector3& v);
 
     Vector3 get_normalized() const;

@@ -10,5 +10,5 @@ class Uniform_Texture : public Texture_Material
 
     ~Uniform_Texture();
 
-    SurfaceInfo get_point_info(unsigned int x, unsigned int y) const final;
+    SurfaceInfo get_point_info(float x, float y) const final;
 };

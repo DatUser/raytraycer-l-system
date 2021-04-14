@@ -24,7 +24,7 @@ class Texture_Material
     {
     }
 
-    virtual SurfaceInfo get_point_info(unsigned int x, unsigned int y) const
+    virtual SurfaceInfo get_point_info(float x, float y) const
       = 0;
 
     ~Texture_Material()

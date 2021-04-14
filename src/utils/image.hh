@@ -4,11 +4,14 @@
 #include <fstream>
 #include <vector>
 #include <utils/vector3.hh>
+#include <string>
 
 class Image
 {
   public:
     Image(unsigned int width, unsigned int height);
+
+    Image(std::string filename);
 
     ~Image();
 
@@ -16,7 +19,7 @@ class Image
 
     void put_pixel(unsigned int x, unsigned int y, Color& color);
 
-    Color get_pixel(unsigned int x, unsigned int y);
+    Color get_pixel(unsigned int x, unsigned int y) const;
 
     bool gradient(unsigned x, unsigned y, float gradient);
 

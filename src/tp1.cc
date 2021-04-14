@@ -11,8 +11,9 @@
 #include <parser/parser.hh>
 #include <parser/print-visitor.hh>
 #include <parser/generate-visitor.hh>
+#include <utils/ppm-texture.hh>
 
-int main1() {
+int main() {
     Image img(1920, 1080);
     Point3 center_s1(-5, 0, 20);
     //Color color{0.71,0.1,0.1};
@@ -27,9 +28,9 @@ int main1() {
     colors_cylinder.push_back(color_cylinder);
 
     Point3 bas(0, -5, 20);
-    Point3 haut(0,0,20);
-    Texture_Material *texture_cylindre = new Uniform_Texture(colors_cylinder, 1, 1, 10);
-    Cylinder cylinder(bas, haut, 0.2, texture_cylindre);
+    Point3 haut(0,5,20);
+    Texture_Material *texture_cylindre = new Ppm_Texture("texture_tronc.ppm", colors_cylinder, 1, 1, 10);
+    Cylinder cylinder(bas, haut, 2.5, texture_cylindre);
 
     Point3 bas2(-0.5, -2.5, 20);
     Point3 haut2(-1.5,0,20);
@@ -97,12 +98,12 @@ int main1() {
     Light light(light_pos, 1, 1, 1);
 
     Scene scene(camera);
-    scene.add_object(&s1);
+//    scene.add_object(&s1);
 //    scene.add_object(&s2);
-    scene.add_object(&s3);
+//    scene.add_object(&s3);
     scene.add_object(&cylinder);
-    scene.add_object(&cylinder2);
-    scene.add_object(&cylinder3);
+//    scene.add_object(&cylinder2);
+//    scene.add_object(&cylinder3);
 //    scene.add_object(&plane);
     //scene.add_object(&t1);
     scene.add_light(light);
@@ -130,7 +131,7 @@ int main1() {
     return 0;
 }
 
-int main()
+int main2()
 {
     //SCENE CREATION
     Image img(1920, 1080);

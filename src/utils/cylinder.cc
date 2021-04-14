@@ -1,27 +1,30 @@
 #include "cylinder.hh"
 
-Cylinder::Cylinder(Vector3 &bas, Vector3 haut, float r, std::shared_ptr<Texture_Material> texture)
+Cylinder::Cylinder(Vector3 &bas, Vector3 haut, float r, Texture_Material *texture)
         : bas(bas),
           haut(haut),
           center(Vector3((bas.x + haut.x) / 2, (bas.y + haut.y) / 2, (bas.z + haut.z) / 2)),
           dir((haut - bas).get_normalized()),
+          vx(crossProd(dir,(dir+Vector3(-1,5,-98)).get_normalized())),
           radius(r),
           height(sqrt(pow((haut.x - bas.x), 2) + pow((haut.y - bas.y), 2) + pow((haut.z - bas.z), 2))),
           texture(texture) {}
 
 SurfaceInfo Cylinder::get_texture(const Vector3 &p) const {
-    if (p.x == 0)
-        return texture->get_point_info(0, 0);
-    return texture->get_point_info(0, 0);
+    float x, y;
+    Vector3 n = get_normal(p);
+    x = acos(dotProd(vx, n) / (sqrt(vx.magnitudeSquared()) * sqrt(n.magnitudeSquared()))) * 180.0 / M_PI;
+    y = sqrt((p - (bas + n * radius)).magnitudeSquared());
+    return texture->get_point_info(x/360, y/sqrt((haut - bas).magnitudeSquared()));
 }
 
 float distance(Vector3 un, Vector3 deux) {
-    return sqrt(pow(deux.x - un.x,2) + pow(deux.y - un.y ,2) + pow(deux.z - un.z ,2));
+    return sqrt(pow(deux.x - un.x, 2) + pow(deux.y - un.y, 2) + pow(deux.z - un.z, 2));
 }
 
 Vector3 Cylinder::get_normal(const Point3 &p) const {
     if ((p - haut).norm < radius) {
-        return  dir;
+        return dir;
     }
     if ((p - bas).norm < radius) {
         return -dir;
@@ -36,25 +39,23 @@ std::optional<Vector3> Cylinder::intersect(const Vector3 &origin, const Vector3 
 
     //intersect du chapeau du haut
     double dotP1 = dotProd(dir, direction);
-    if(dotP1 < 0)
-    {
+    if (dotP1 < 0) {
         double d1 = -(dotProd(dir, haut));
-        double t1 = -(d1 + dotProd(dir, origin))/dotP1;
+        double t1 = -(d1 + dotProd(dir, origin)) / dotP1;
         Vector3 p1 = origin + (direction * t1);
 
-        if((p1 - haut).magnitudeSquared() <= (radius * radius) * 0.999)
+        if ((p1 - haut).magnitudeSquared() <= (radius * radius) * 0.999)
             return origin + (direction * t1);
     }
 
     //intersect du chapeau du bas
     double dotP2 = dotProd(-dir, direction);
-    if(dotP2 < 0)
-    {
-        double d2 = -(dotProd((-dir),bas));
-        double t2 = -(d2 + dotProd(-dir, origin) ) / dotP2;
+    if (dotP2 < 0) {
+        double d2 = -(dotProd((-dir), bas));
+        double t2 = -(d2 + dotProd(-dir, origin)) / dotP2;
         Vector3 p2 = origin + (direction * t2);
 
-        if((p2 - bas).magnitudeSquared() <= (radius * radius) * 0.999)
+        if ((p2 - bas).magnitudeSquared() <= (radius * radius) * 0.999)
             return origin + (direction * t2);
     }
 
@@ -70,7 +71,7 @@ std::optional<Vector3> Cylinder::intersect(const Vector3 &origin, const Vector3 
 
     double discr = B * B - 4 * A * C;
 
-    if(discr<0) {
+    if (discr < 0) {
         return std::nullopt;
     }
 
