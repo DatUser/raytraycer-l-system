@@ -7,7 +7,7 @@
 class Cylinder : public Object {
 public:
 //    Cylinder(Vector3& c, float r, float h, Texture_Material* texture);
-    Cylinder(Vector3& bas, Vector3 haut, float r, Texture_Material *texture);
+    Cylinder(Vector3& bas, Vector3 haut, float r, std::shared_ptr<Texture_Material> texture);
 
     std::optional<Vector3> intersect(const Vector3& origin,
                                      const Vector3& direction) const final;
