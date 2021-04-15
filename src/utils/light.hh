@@ -1,7 +1,6 @@
 #pragma once
 
 #include "image.hh"
-#include "point3.hh"
 
 class Light
 {

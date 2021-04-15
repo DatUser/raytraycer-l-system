@@ -180,7 +180,7 @@ void Scene::capture_image(Image &image) const {
         //clock_t start = clock();
         //omp_set_dynamic(1);
         omp_set_num_threads(nThreads);
-        #pragma omp parallel  for schedule(static, 12)
+#pragma omp parallel  for schedule(static, 12)
         for (unsigned int i = h * (nThreads - 1); i < nThreads * h/*image.height*/ ; i++) {
             for (unsigned int j = 0; j < image.width; j++) {
                 Color color = Color(0, 0, 0);
@@ -206,7 +206,7 @@ void Scene::capture_image(Image &image) const {
         //clock_t start = clock();
         //omp_set_dynamic(1);
         omp_set_num_threads(nThreads);
-        #pragma omp parallel  for schedule(static, 12)
+#pragma omp parallel  for schedule(static, 12)
         for (unsigned int i = h * (nThreads - 1); i < nThreads * h/*image.height*/ ; i++) {
             if (i == 0 || i == image.height - 1)
                 continue;

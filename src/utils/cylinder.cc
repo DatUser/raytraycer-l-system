@@ -5,7 +5,7 @@ Cylinder::Cylinder(Vector3 &bas, Vector3 haut, float r, Texture_Material *textur
           haut(haut),
           center(Vector3((bas.x + haut.x) / 2, (bas.y + haut.y) / 2, (bas.z + haut.z) / 2)),
           dir((haut - bas).get_normalized()),
-          vx(crossProd(dir,(dir+Vector3(-1,5,-98)).get_normalized())),
+          vx(crossProd(dir, (dir + Vector3(-1, 5, -98)).get_normalized())),
           radius(r),
           height(sqrt(pow((haut.x - bas.x), 2) + pow((haut.y - bas.y), 2) + pow((haut.z - bas.z), 2))),
           texture(texture) {}
@@ -15,7 +15,7 @@ SurfaceInfo Cylinder::get_texture(const Vector3 &p) const {
     Vector3 n = get_normal(p);
     x = acos(dotProd(vx, n) / (sqrt(vx.magnitudeSquared()) * sqrt(n.magnitudeSquared()))) * 180.0 / M_PI;
     y = sqrt((p - (bas + n * radius)).magnitudeSquared());
-    return texture->get_point_info(x/360, y/sqrt((haut - bas).magnitudeSquared()));
+    return texture->get_point_info(x / 360, y / sqrt((haut - bas).magnitudeSquared()));
 }
 
 float distance(Vector3 un, Vector3 deux) {

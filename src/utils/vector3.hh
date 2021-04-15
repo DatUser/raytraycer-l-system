@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include <math.h>
-#include "point3.hh"
 
 //class Point3;
 

@@ -1,6 +1,6 @@
 #include <utils/triangle.hh>
 
-Triangle::Triangle(Point3& a, Point3& b, Point3& c, Texture_Material* texture)
+Triangle::Triangle(Point3& a, Point3& b, Point3& c, std::shared_ptr<Texture_Material> texture)
 : a(a),
   b(b),
   c(c),

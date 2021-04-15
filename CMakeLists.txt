@@ -11,8 +11,8 @@ include_directories(
 )
 
 # Searches for all .cc files
-set(SRC "src/utils/point3.cc"
-    "src/utils/vector3.cc"
+set(SRC
+        "src/utils/vector3.cc"
     "src/utils/image.cc"
     "src/utils/sphere.cc"
     "src/utils/scene.cc"

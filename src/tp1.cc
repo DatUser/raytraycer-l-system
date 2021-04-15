@@ -1,6 +1,5 @@
 #include <iostream>
 #include <iterator>
-#include <utils/point3.hh>
 #include <utils/image.hh>
 #include <utils/uniform-texture.hh>
 #include <utils/sphere.hh>
@@ -28,8 +27,8 @@ int main() {
     colors_cylinder.push_back(color_cylinder);
 
     Point3 bas(0, -5, 20);
-    Point3 haut(0,5,20);
-    Texture_Material *texture_cylindre = new Ppm_Texture("texture_tronc.ppm", colors_cylinder, 1, 1, 10);
+    Point3 haut(0,5,30);
+    Texture_Material *texture_cylindre = new Ppm_Texture("../resource/texture_tronc.ppm", colors_cylinder, 1, 1, 10);
     Cylinder cylinder(bas, haut, 2.5, texture_cylindre);
 
     Point3 bas2(-0.5, -2.5, 20);
@@ -79,11 +78,12 @@ int main() {
     color2[0] = 0;
     color2[1] = 0;
     color2[2] = 255;*/
+    /*
     Color color4{0.1, 0.1, 0.8};
     std::vector<Color> colors_t4;
     colors_t4.push_back(color4);
-    Texture_Material* texture4 = new Uniform_Texture(colors_t4, 0.7, 0.1,20);
-    Triangle t1(b, a, c, texture4);
+    std::shared_ptr<Uniform_Texture texture4 = new Uniform_Texture(colors_t4, 0.7, 0.1,20);
+    Triangle t1(b, a, c, texture4);*/
 
     //TEST
     /*Vector3 project_p(0, 0, -15);

@@ -11,6 +11,9 @@ Image::Image(unsigned int width, unsigned int height)
 
 Image::Image(std::string filename) {
     std::ifstream file(filename);
+
+    file.exceptions();
+
     std::string line;
     getline (file, line);
     getline (file, line);
