@@ -6,7 +6,7 @@
 class Sphere : public Object
 {
   public:
-    Sphere(Point3& center, float radius, Texture_Material* texture);
+    Sphere(Point3& center, float radius, std::shared_ptr<Texture_Material> texture);
 
     std::optional<Vector3> intersect(const Vector3& origin,
         const Vector3& direction) const final;

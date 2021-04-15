@@ -6,6 +6,9 @@
 #include "node-rotate.hh"
 #include "node-rule.hh"
 #include "node-diameter.hh"
+#include "node-leaf.hh"
+#include "node-p.hh"
+#include "node-back.hh"
 #include "scene.hh"
 #include <utils/vector3.hh>
 
@@ -26,6 +29,9 @@ public:
     void visit(const NodeRotate& node)  final;
     void visit(const NodeRule& node)  final;
     void visit(const NodeDiameter& node)  final;
+    void visit(const NodeLeaf &node) final;
+    void visit(const NodeP &node) final;
+    void visit(const NodeBack &node) final;
 
 private:
     //To avoid multiple node-start

@@ -138,10 +138,14 @@ Color Scene::compute_light(const Point3 &origin, const Point3 &hitpoint, const O
         //Collision to light
         Vector3 light_v = Vector3(hitpoint, light.get_position()).get_normalized();
         Vector3 n = object->get_normal(hitpoint);
-        float d = dotProd(light_v, n);
-        if (d >= 0)
-            color += info.color * light.get_color() * info.kd * (d);
 
+
+        Color c = info.color * light.get_color() * info.kd;
+        float d = abs(dotProd(light_v, n));
+        if (d > 0)
+            c = c * d;
+
+        color += c;
         //Compute specular component
 
         //Calculate reflected vector

@@ -8,7 +8,7 @@ class Uniform_Texture : public Texture_Material
 
     Uniform_Texture(std::vector<Color>& color, float kd, float ks, float ns);
 
-    ~Uniform_Texture();
+    ~Uniform_Texture() = default;
 
     SurfaceInfo get_point_info(unsigned int x, unsigned int y) const final;
 };

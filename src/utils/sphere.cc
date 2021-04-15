@@ -2,7 +2,7 @@
 #include <memory>
 #include <math.h>
 
-Sphere::Sphere(Point3 &center, float radius, Texture_Material *texture)
+Sphere::Sphere(Point3 &center, float radius, std::shared_ptr<Texture_Material> texture)
         : center(center),
           radius(radius),
           texture(texture) {}

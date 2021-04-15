@@ -28,7 +28,12 @@ set(SRC "src/utils/point3.cc"
     "src/parser/generate-visitor.cc"
     "src/parser/node-rule.cc"
     "src/parser/node-diameter.cc"
-    "src/parser/dot-visitor.cc"
+    #"src/parser/dot-visitor.cc"
+    "src/utils/leaf.cc"
+    "src/utils/polygon.cc"
+    "src/parser/node-leaf.cc"
+    "src/parser/node-p.cc"
+    "src/parser/node-back.cc"
     "src/tp1.cc")
 
 

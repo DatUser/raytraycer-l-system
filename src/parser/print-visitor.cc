@@ -135,3 +135,15 @@ void PrintVisitor::visit(const NodeDiameter &node) {
             *this = save;
     }
 }
+
+void PrintVisitor::visit(const NodeLeaf &node) {
+    (void) node;
+}
+
+void PrintVisitor::visit(const NodeP &node) {
+    (void) node;
+}
+
+void PrintVisitor::visit(const NodeBack &node) {
+    (void) node;
+}

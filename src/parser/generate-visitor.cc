@@ -1,6 +1,6 @@
 #include "generate-visitor.hh"
 
-GenerateVisitor::GenerateVisitor(Scene* scene, int depth, std::map<char, Node*>& rules,
+GenerateVisitor::GenerateVisitor(Scene* scene, std::map<char, int>& depth, std::map<char, Node*>& rules,
                                  float diameter_reduction)
 : is_set(false),
   scene(scene),
@@ -11,7 +11,8 @@ GenerateVisitor::GenerateVisitor(Scene* scene, int depth, std::map<char, Node*>&
   t(1),
   alpha(90),
   diameter(0.2),
-  diameter_reduction(diameter_reduction)
+  diameter_reduction(diameter_reduction),
+  points(std::vector<Point3>())
 {}
 
 GenerateVisitor::GenerateVisitor(const GenerateVisitor& obj)
@@ -26,6 +27,7 @@ GenerateVisitor::GenerateVisitor(const GenerateVisitor& obj)
     alpha = obj.alpha;
     diameter = obj.diameter;
     diameter_reduction = obj.diameter_reduction;
+    points = obj.points;
 }
 
 GenerateVisitor& GenerateVisitor::operator=(const GenerateVisitor& obj)
@@ -40,6 +42,7 @@ GenerateVisitor& GenerateVisitor::operator=(const GenerateVisitor& obj)
     alpha = obj.alpha;
     diameter = obj.diameter;
     diameter_reduction = obj.diameter_reduction;
+    points = obj.points;
 
     return *this;
 }
@@ -60,14 +63,14 @@ void GenerateVisitor::build_branch(Point3& origin, Point3& dest) const
 }
 
 void GenerateVisitor::visit(const NodeF& node) {
-    if (depth == 0){
+    if (depth[node.get_rule()] == 0){
         Vector3 origin = position;
         position += (direction * t);
         build_branch(origin, position);
     } else {
-        depth -=1;
+        depth[node.get_rule()] -=1;
         rules[node.get_rule()]/*->get_children()[0]*/->accept(*this);
-        depth += 1;
+        depth[node.get_rule()] += 1;
     }
 
     GenerateVisitor save = *this;
@@ -125,10 +128,10 @@ void GenerateVisitor::visit(const NodeRotate &node)
 }
 
 void GenerateVisitor::visit(const NodeRule &node) {
-    if (depth != 0){
-        depth -=1;
+    if (depth[node.get_rule()] != 0){
+        depth[node.get_rule()] -=1;
         rules[node.get_rule()]/*->get_children()[0]*/->accept(*this);
-        depth += 1;
+        depth[node.get_rule()] += 1;
     }
 
     GenerateVisitor save = *this;
@@ -153,4 +156,54 @@ void GenerateVisitor::visit(const NodeDiameter &node) {
 
 void GenerateVisitor::reduce_diameter() {
     diameter *= diameter_reduction;
+}
+
+void GenerateVisitor::build_polygon() const
+{
+    Color color_l{0.2, 0.8, 0.1};
+    std::vector<Color> colors_l;
+    colors_l.push_back(color_l);
+    std::shared_ptr<Texture_Material> texture_l = std::make_shared<Uniform_Texture>(colors_l, 0.7, 0.1, 20);
+    Polygon* p = new Polygon(points, texture_l);
+    scene->add_object(p);
+}
+
+void GenerateVisitor::visit(const NodeLeaf &node) {
+    GenerateVisitor save = *this;
+    for (unsigned int i = 0; i < node.get_children().size(); i++) {
+        node.get_children()[i]->accept(*this);
+    }
+
+    points.push_back(position);
+    build_polygon();
+
+    *this = save;
+}
+
+void GenerateVisitor::visit(const NodeP &node) {
+    Point3 origin = position;
+    position += (direction * (t / 5));
+
+    points.push_back(origin);
+
+    GenerateVisitor save = *this;
+    /*if (depth == 0)
+        t = t * 0.75;*/
+    for (unsigned int i = 0; i < node.get_children().size(); i++) {
+        node.get_children()[i]->accept(*this);
+        if (i != node.get_children().size() - 1)
+            *this = save;
+    }
+
+}
+
+void GenerateVisitor::visit(const NodeBack &node) {
+    direction = -direction;
+
+    GenerateVisitor save = *this;
+    for (unsigned int i = 0; i < node.get_children().size(); i++) {
+        node.get_children()[i]->accept(*this);
+        if (i != node.get_children().size() - 1)
+            *this = save;
+    }
 }
