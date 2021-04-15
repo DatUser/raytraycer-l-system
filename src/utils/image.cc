@@ -9,6 +9,47 @@ Image::Image(unsigned int width, unsigned int height)
           pixels(std::vector<uint8_t>(width * height * 3)) {
 }
 
+Image::Image(std::string filename) {
+    std::ifstream file(filename);
+
+    file.exceptions();
+
+    std::string line;
+    getline (file, line);
+    getline (file, line);
+    std::string str_width = "", str_height = "";
+    float i = 0;
+    while (i < line.length() and line[i] != ' ') {
+        str_width = str_width + line[i];
+        i++;
+    }
+    i++;
+    while (i < line.length() and line[i] != ' ') {
+        str_height = str_height + line[i];
+        i++;
+    }
+    width = std::stoi(str_width);
+    height = std::stoi(str_height);
+    pixels = std::vector<uint8_t>();
+
+    getline (file, line);
+
+    while (getline (file, line)) {
+        for (float j = 0; j < line.length(); ++j) {
+            std::string num = "";
+            while (j < line.length() and line[j] != ' ' and line[j] != '\r') {
+                num = num + line[j];
+                j++;
+            }
+            if (num != "") {
+                uint8_t x = static_cast<uint8_t>(std::stoi(num));
+                pixels.push_back(x);
+            }
+        }
+    }
+}
+
+
 Image::~Image() {
 }
 
@@ -55,7 +96,7 @@ void Image::save_file() {
     file.close();
 }
 
-Color Image::get_pixel(unsigned int x, unsigned int y) {
+Color Image::get_pixel(unsigned int x, unsigned int y) const {
     float R, G, B;
     R = pixels[(x * width + y) * 3];
     G = pixels[(x * width + y) * 3 + 1];

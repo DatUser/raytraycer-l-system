@@ -78,6 +78,14 @@ bool Vector3::operator==(const Vector3& v) const
     return X < 0.18 && Y < 0.18 && Z < 0.18;
 }
 
+bool Vector3::operator<(const Vector3& v) const
+{
+    auto a = sqrt(this->magnitudeSquared());
+    auto b = sqrt(v.magnitudeSquared());
+    return a < b;
+}
+
+
 void Vector3::operator+=(const Vector3& v)
 {
     x += v.x;

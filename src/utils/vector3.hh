@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include <math.h>
-#include "point3.hh"
 
 //class Point3;
 
@@ -34,6 +33,8 @@ public:
     Vector3 operator*(const Vector3& v) const;
 
     bool operator==(const Vector3& v) const;
+
+    bool operator<(const Vector3& v) const;
 
     void operator+=(const Vector3& v);
 

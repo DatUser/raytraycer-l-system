@@ -54,10 +54,14 @@ void GenerateVisitor::visit(const Node& node)
 
 void GenerateVisitor::build_branch(Point3& origin, Point3& dest) const
 {
-    Color color = Color(0.5,0.3,0.1);
+    /*Color color = Color(0.5,0.3,0.1);
     std::vector<Color> colors = std::vector<Color>();
     colors.push_back(color);
-    Texture_Material* texture = new Uniform_Texture(colors, 0.7, 0, 0);
+    Texture_Material* texture = new Uniform_Texture(colors, 0.7, 0, 0);*/
+    Color color_cylinder{0, 1, 0};
+    std::vector<Color> colors_cylinder;
+    colors_cylinder.push_back(color_cylinder);
+    Texture_Material *texture = new Ppm_Texture("../resource/texture_tronc.ppm", colors_cylinder, 1, 1, 10);
     Cylinder* cylinder = new Cylinder(origin, dest, diameter, texture);
     scene->add_object(cylinder);
 }

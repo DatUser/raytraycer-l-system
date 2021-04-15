@@ -92,7 +92,6 @@ Node* Parser::build_rule(std::string& rule, Point3& origin, Vector3& direction, 
             }
             default:
             {
-                std::cout << rule[i] << std::endl;
                 Node* new_node = new NodeRule(rule[i]);
                 curr->add_children(new_node);
                 curr = new_node;
