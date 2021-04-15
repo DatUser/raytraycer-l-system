@@ -60,7 +60,7 @@ int main()
     //BUILDING RULE'S TREE
     std::map<char, Node*> rules;
     std::map<char, int> depth;
-    int d = 2;//depth
+    int d = 1;//depth
 
     Point3 origin = Point3(0,-5,15);
     Vector3 direction = Vector3(0,1,1).get_normalized();

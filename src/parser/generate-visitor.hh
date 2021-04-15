@@ -60,6 +60,9 @@ private:
     Vector3 direction;
     //distance
     float t;
+    //polygon distance
+    float t_l;
+
     //angle in degree
     float alpha;
 

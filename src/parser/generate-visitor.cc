@@ -24,6 +24,7 @@ GenerateVisitor::GenerateVisitor(const GenerateVisitor& obj)
     position = obj.position;
     direction = obj.direction;
     t = obj.t;
+    t_l = obj.t_l;
     alpha = obj.alpha;
     diameter = obj.diameter;
     diameter_reduction = obj.diameter_reduction;
@@ -39,6 +40,7 @@ GenerateVisitor& GenerateVisitor::operator=(const GenerateVisitor& obj)
     position = obj.position;
     direction = obj.direction;
     t = obj.t;
+    t_l = obj.t_l;
     alpha = obj.alpha;
     diameter = obj.diameter;
     diameter_reduction = obj.diameter_reduction;
@@ -71,6 +73,8 @@ void GenerateVisitor::visit(const NodeF& node) {
         Vector3 origin = position;
         position += (direction * t);
         build_branch(origin, position);
+
+        t*= 0.8;
     } else {
         depth[node.get_rule()] -=1;
         rules[node.get_rule()]/*->get_children()[0]*/->accept(*this);
@@ -95,6 +99,7 @@ void GenerateVisitor::visit(const NodeStart& node)
         position = node.get_origin();
         direction = node.get_direction();
         t = node.get_distance();
+        t_l = t / 5.0;
         alpha = node.get_angle();
         diameter = node.get_diameter();
     }
@@ -186,7 +191,7 @@ void GenerateVisitor::visit(const NodeLeaf &node) {
 
 void GenerateVisitor::visit(const NodeP &node) {
     Point3 origin = position;
-    position += (direction * (t / 5));
+    position += (direction * t_l);
 
     points.push_back(origin);
 
