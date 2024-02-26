@@ -2,7 +2,7 @@
 
 # Results:
 
-![](https://cdn.discordapp.com/attachments/369053408256327680/889554747902820352/unknown.png)
+![](https://cdn.discordapp.com/attachments/978827123584290826/1211745615613267988/render.png?ex=65ef510b&is=65dcdc0b&hm=57772f05bcd67c83db6f3c43e970f81de9b7f17fff17d799a057b466157e7d77&)
 
 The objective is to generate a tree from an L-System sentence.
 
